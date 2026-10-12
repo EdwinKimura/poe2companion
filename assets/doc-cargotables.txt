@@ -1,0 +1,648 @@
+vendor_rewards
+_pageName: String
+_pageID: Integer
+act: Integer
+class_ids: List of String
+classes: List of String
+npc: String
+quest: String
+quest_id: String
+
+stackables
+_pageName: String
+_pageID: Integer
+stack_size: Integer
+stack_size_currency_tab: Integer
+
+shields
+_pageName: String
+_pageID: Integer
+block: Integer
+block_html: Text
+block_range_average: Integer
+block_range_colour: String
+block_range_maximum: Integer
+block_range_minimum: Integer
+block_range_text: String
+
+quest_rewards
+_pageName: String
+_pageID: Integer
+act: Integer
+class_ids: List of String
+classes: List of String
+item_level: Integer
+notes: Text
+quest: String
+quest_id: String
+rarity: String
+sockets: Integer
+
+map_fragments
+_pageName: String
+_pageID: Integer
+map_fragment_limit: Integer
+
+jewels
+_pageName: String
+_pageID: Integer
+jewel_limit: String
+radius_html: Text
+
+item_buffs
+_pageName: String
+_pageID: Integer
+buff_values: List of Integer
+icon: String
+id: String
+stat_text: String
+
+hideout_doodads
+_pageName: String
+_pageID: Integer
+is_master_doodad: Boolean
+variation_count: Integer
+
+flasks
+_pageName: String
+_pageID: Integer
+charges_max: Integer
+charges_max_html: Text
+charges_max_range_average: Integer
+charges_max_range_colour: String
+charges_max_range_maximum: Integer
+charges_max_range_minimum: Integer
+charges_max_range_text: String
+charges_per_use: Integer
+charges_per_use_html: Text
+charges_per_use_range_average: Integer
+charges_per_use_range_colour: String
+charges_per_use_range_maximum: Integer
+charges_per_use_range_minimum: Integer
+charges_per_use_range_text: String
+duration: Float
+duration_html: Text
+duration_range_average: Float
+duration_range_colour: String
+duration_range_maximum: Float
+duration_range_minimum: Float
+duration_range_text: String
+life: Integer
+life_html: Text
+life_range_average: Integer
+life_range_colour: String
+life_range_maximum: Integer
+life_range_minimum: Integer
+life_range_text: String
+mana: Integer
+mana_html: Text
+mana_range_average: Integer
+mana_range_colour: String
+mana_range_maximum: Integer
+mana_range_minimum: Integer
+mana_range_text: String
+
+essences
+_pageName: String
+_pageID: Integer
+category: String
+level: Integer
+level_restriction: Integer
+type: Integer
+
+cosmetic_items
+_pageName: String
+_pageID: Integer
+cosmetic_type: String
+target: List of String
+theme: String
+
+atlas_maps
+_pageName: String
+_pageID: Integer
+map_tier0: Integer
+map_tier1: Integer
+map_tier2: Integer
+map_tier3: Integer
+map_tier4: Integer
+region_id: String
+region_minimum: Integer
+x: Float
+x0: Float
+x1: Float
+x2: Float
+x3: Float
+x4: Float
+y: Float
+y0: Float
+y1: Float
+y2: Float
+y3: Float
+y4: Float
+
+atlas_connections
+_pageName: String
+_pageID: Integer
+map1: String
+map2: String
+region0: Boolean
+region1: Boolean
+region2: Boolean
+region3: Boolean
+region4: Boolean
+
+skill
+_pageName: String
+_pageID: Integer
+active_skill_name: String
+cast_time: Float
+description: Text
+html: Text
+item_class_id_restriction: List of String
+item_class_restriction: List of String
+max_level: Integer
+projectile_speed: Integer
+radius: Integer
+radius_description: Text
+radius_secondary: Integer
+radius_secondary_description: Text
+radius_tertiary: Integer
+radius_tertiary_description: Text
+skill_icon: Page
+skill_id: String
+skill_screenshot: Page
+stat_text: Text
+
+skill_stats_per_level
+_pageName: String
+_pageID: Integer
+id: String
+level: Integer
+value: Integer
+
+skill_levels
+_pageName: String
+_pageID: Integer
+attack_speed_multiplier: Integer
+attack_time: Float
+cooldown: Float
+cost_amounts: List of Integer
+cost_multiplier: Float
+cost_types: List of String
+critical_strike_chance: Float
+damage_effectiveness: Float
+damage_multiplier: Float
+dexterity_requirement: Integer
+duration: Float
+experience: Integer
+intelligence_requirement: Integer
+level: Integer
+level_requirement: Integer
+life_reservation_flat: Integer
+life_reservation_percent: Integer
+mana_reservation_flat: Integer
+mana_reservation_percent: Integer
+spirit_reservation_flat: Integer
+stat_text: Text
+stored_uses: Integer
+strength_requirement: Integer
+vaal_soul_gain_prevention_time: Float
+vaal_souls_requirement: Integer
+vaal_stored_uses: Integer
+
+ascendancy_classes
+_pageName: String
+_pageID: Integer
+character_class: String
+character_id: Integer
+flavour_text: String
+id: Integer
+name: String
+
+monsters
+_pageName: String
+_pageID: Integer
+attack_speed: Float
+critical_strike_chance: Float
+damage_multiplier: Float
+endgame_mod_ids: List of String
+experience_multiplier: Float
+health_multiplier: Float
+is_boss: Boolean
+maximum_attack_distance: Integer
+metadata_id: String
+minimum_attack_distance: Integer
+mod_ids: List of String
+model_size_multiplier: Float
+monster_type_id: String
+name: String
+part1_mod_ids: List of String
+part2_mod_ids: List of String
+rarity: String
+rarity_id: String
+size: Integer
+skill_ids: List of String
+tags: List of String
+
+monster_types
+_pageName: String
+_pageID: Integer
+armour_multiplier: Float
+damage_spread: Float
+energy_shield_multiplier: Float
+evasion_multiplier: Float
+id: String
+monster_resistance_id: String
+tags: List of String
+
+monster_resistances
+_pageName: String
+_pageID: Integer
+id: String
+maps_chaos: Integer
+maps_cold: Integer
+maps_fire: Integer
+maps_lightning: Integer
+part1_chaos: Integer
+part1_cold: Integer
+part1_fire: Integer
+part1_lightning: Integer
+part2_chaos: Integer
+part2_cold: Integer
+part2_fire: Integer
+part2_lightning: Integer
+
+monster_map_multipliers
+_pageName: String
+_pageID: Integer
+boss_damage: Integer
+boss_item_quantity: Integer
+boss_item_rarity: Integer
+boss_life: Integer
+damage: Integer
+level: Integer
+life: Integer
+
+SkkiasTestDictionary
+_pageName: String
+_pageID: Integer
+Term: Text
+Category: Text
+Definition: Text
+
+events
+_pageName: String
+_pageID: Integer
+end_date: Datetime
+id: List of String
+is_hardcore: Boolean
+is_standard: Boolean
+links: Wikitext
+name: String
+number_of_events: Integer
+ordinal: Integer
+prize: Wikitext
+release_date: Datetime
+release_version: String
+rewards: Wikitext
+short_name: String
+type: String
+
+legacy_variants
+_pageName: String
+_pageID: Integer
+removal_version: String
+implicit_stat_text: Text
+explicit_stat_text: Text
+stat_text: Text
+base_item: String
+required_level: Integer
+
+armours
+_pageName: String
+_pageID: Integer
+armour_html: Text
+armour_max: Integer
+armour_min: Integer
+armour_range_average: Integer
+armour_range_colour: String
+armour_range_maximum: Integer
+armour_range_minimum: Integer
+armour_range_text: String
+energy_shield_html: Text
+energy_shield_max: Integer
+energy_shield_min: Integer
+energy_shield_range_average: Integer
+energy_shield_range_colour: String
+energy_shield_range_maximum: Integer
+energy_shield_range_minimum: Integer
+energy_shield_range_text: String
+evasion_html: Text
+evasion_max: Integer
+evasion_min: Integer
+evasion_range_average: Integer
+evasion_range_colour: String
+evasion_range_maximum: Integer
+evasion_range_minimum: Integer
+evasion_range_text: String
+movement_speed: Float
+ward_html: Text
+ward_max: Integer
+ward_min: Integer
+ward_range_average: Integer
+ward_range_colour: String
+ward_range_maximum: Integer
+ward_range_minimum: Integer
+ward_range_text: String
+
+weapons
+_pageName: String
+_pageID: Integer
+attack_speed: Float
+attack_speed_html: Text
+attack_speed_range_average: Float
+attack_speed_range_colour: String
+attack_speed_range_maximum: Float
+attack_speed_range_minimum: Float
+attack_speed_range_text: String
+chaos_damage_html: Text
+chaos_damage_max: Integer
+chaos_damage_max_html: Text
+chaos_damage_max_range_average: Integer
+chaos_damage_max_range_colour: String
+chaos_damage_max_range_maximum: Integer
+chaos_damage_max_range_minimum: Integer
+chaos_damage_max_range_text: String
+chaos_damage_min: Integer
+chaos_damage_min_html: Text
+chaos_damage_min_range_average: Integer
+chaos_damage_min_range_colour: String
+chaos_damage_min_range_maximum: Integer
+chaos_damage_min_range_minimum: Integer
+chaos_damage_min_range_text: String
+chaos_dps_html: Text
+chaos_dps_range_average: Float
+chaos_dps_range_colour: String
+chaos_dps_range_maximum: Float
+chaos_dps_range_minimum: Float
+chaos_dps_range_text: String
+cold_damage_html: Text
+cold_damage_max: Integer
+cold_damage_max_html: Text
+cold_damage_max_range_average: Integer
+cold_damage_max_range_colour: String
+cold_damage_max_range_maximum: Integer
+cold_damage_max_range_minimum: Integer
+cold_damage_max_range_text: String
+cold_damage_min: Integer
+cold_damage_min_html: Text
+cold_damage_min_range_average: Integer
+cold_damage_min_range_colour: String
+cold_damage_min_range_maximum: Integer
+cold_damage_min_range_minimum: Integer
+cold_damage_min_range_text: String
+cold_dps_html: Text
+cold_dps_range_average: Float
+cold_dps_range_colour: String
+cold_dps_range_maximum: Float
+cold_dps_range_minimum: Float
+cold_dps_range_text: String
+critical_strike_chance: Float
+critical_strike_chance_html: Text
+critical_strike_chance_range_average: Float
+critical_strike_chance_range_colour: String
+critical_strike_chance_range_maximum: Float
+critical_strike_chance_range_minimum: Float
+critical_strike_chance_range_text: String
+damage_avg: Text
+damage_html: Text
+dps_html: Text
+dps_range_average: Float
+dps_range_colour: String
+dps_range_maximum: Float
+dps_range_minimum: Float
+dps_range_text: String
+elemental_dps_html: Text
+elemental_dps_range_average: Float
+elemental_dps_range_colour: String
+elemental_dps_range_maximum: Float
+elemental_dps_range_minimum: Float
+elemental_dps_range_text: String
+fire_damage_html: Text
+fire_damage_max: Integer
+fire_damage_max_html: Text
+fire_damage_max_range_average: Integer
+fire_damage_max_range_colour: String
+fire_damage_max_range_maximum: Integer
+fire_damage_max_range_minimum: Integer
+fire_damage_max_range_text: String
+fire_damage_min: Integer
+fire_damage_min_html: Text
+fire_damage_min_range_average: Integer
+fire_damage_min_range_colour: String
+fire_damage_min_range_maximum: Integer
+fire_damage_min_range_minimum: Integer
+fire_damage_min_range_text: String
+fire_dps_html: Text
+fire_dps_range_average: Float
+fire_dps_range_colour: String
+fire_dps_range_maximum: Float
+fire_dps_range_minimum: Float
+fire_dps_range_text: String
+lightning_damage_html: Text
+lightning_damage_max: Integer
+lightning_damage_max_html: Text
+lightning_damage_max_range_average: Integer
+lightning_damage_max_range_colour: String
+lightning_damage_max_range_maximum: Integer
+lightning_damage_max_range_minimum: Integer
+lightning_damage_max_range_text: String
+lightning_damage_min: Integer
+lightning_damage_min_html: Text
+lightning_damage_min_range_average: Integer
+lightning_damage_min_range_colour: String
+lightning_damage_min_range_maximum: Integer
+lightning_damage_min_range_minimum: Integer
+lightning_damage_min_range_text: String
+lightning_dps_html: Text
+lightning_dps_range_average: Float
+lightning_dps_range_colour: String
+lightning_dps_range_maximum: Float
+lightning_dps_range_minimum: Float
+lightning_dps_range_text: String
+physical_damage_html: Text
+physical_damage_max: Integer
+physical_damage_max_html: Text
+physical_damage_max_range_average: Integer
+physical_damage_max_range_colour: String
+physical_damage_max_range_maximum: Integer
+physical_damage_max_range_minimum: Integer
+physical_damage_max_range_text: String
+physical_damage_min: Integer
+physical_damage_min_html: Text
+physical_damage_min_range_average: Integer
+physical_damage_min_range_colour: String
+physical_damage_min_range_maximum: Integer
+physical_damage_min_range_minimum: Integer
+physical_damage_min_range_text: String
+physical_dps_html: Text
+physical_dps_range_average: Float
+physical_dps_range_colour: String
+physical_dps_range_maximum: Float
+physical_dps_range_minimum: Float
+physical_dps_range_text: String
+poison_dps_html: Text
+poison_dps_range_average: Float
+poison_dps_range_colour: String
+poison_dps_range_maximum: Float
+poison_dps_range_minimum: Float
+poison_dps_range_text: String
+reload_time: Float
+reload_time_html: Text
+reload_time_range_average: Float
+reload_time_range_colour: String
+reload_time_range_maximum: Float
+reload_time_range_minimum: Float
+reload_time_range_text: String
+spirit: Integer
+spirit_html: Text
+spirit_range_average: Integer
+spirit_range_colour: String
+spirit_range_maximum: Integer
+spirit_range_minimum: Integer
+spirit_range_text: String
+weapon_range: Float
+weapon_range_html: Text
+weapon_range_range_average: Float
+weapon_range_range_colour: String
+weapon_range_range_maximum: Float
+weapon_range_range_minimum: Float
+weapon_range_range_text: String
+
+skill_gems
+_pageName: String
+_pageID: Integer
+awakened_variant_id: String
+dexterity_percent: Integer
+gem_description: Text
+gem_tags: List of String
+gem_tier: Integer
+intelligence_percent: Integer
+is_awakened_support_gem: Boolean
+is_vaal_skill_gem: Boolean
+primary_attribute: String
+strength_percent: Integer
+vaal_variant_id: String
+
+liquid_emotions
+_pageName: String
+_pageID: Integer
+modifier: String
+stat_text: Text
+tier: Integer
+
+inherent_skills
+_pageName: String
+_pageID: Integer
+inherent_skills_ids: List of String
+inherent_skills_text: Text
+
+areas
+_pageName: String
+_pageID: Integer
+act: Integer
+adjacent_biomes: List of String
+area_level: Integer
+area_type_tags: List of String
+biomes: List of String
+boss_monster_ids: List of String
+connection_ids: List of String
+entry_npc: String
+entry_text: Text
+flavour_text: Text
+has_waypoint: Boolean
+id: String
+infobox_html: Text
+is_hideout_area: Boolean
+is_labyrinth_airlock_area: Boolean
+is_labyrinth_area: Boolean
+is_labyrinth_boss_area: Boolean
+is_map_area: Boolean
+is_town_area: Boolean
+is_underground: Boolean
+is_unique_map_area: Boolean
+is_vaal_area: Boolean
+level_restriction_max: Integer
+loading_screen: Page
+main_page: Page
+mainpage_categories: List of String
+modifier_ids: List of String
+monster_ids: List of String
+name: String
+parent_area_id: String
+release_version: String
+removal_version: String
+screenshot: Page
+stat_text: Text
+strongbox_max_count: Integer
+strongbox_spawn_chance: Integer
+strongbox_weight_magic: Integer
+strongbox_weight_normal: Integer
+strongbox_weight_rare: Integer
+strongbox_weight_unique: Integer
+tags: List of String
+vaal_area_ids: List of String
+vaal_area_spawn_chance: Integer
+
+guides
+_pageName: String
+_pageID: Integer
+date: Date
+subject: Text
+version: String
+
+passive_skill_stats
+_pageName: String
+_pageID: Integer
+id: String
+value: Integer
+
+augments
+_pageName: String
+_pageID: Integer
+augment_limit: String
+stat_text: Text
+stat_text_bonded: Text
+type_id: String
+type_name: String
+
+passive_skills
+_pageName: String
+_pageID: Integer
+ascendancy_class: String
+atlas_sub_tree: String
+buff_id: String
+connections: List of String
+flavour_text: Text
+frame: String
+icon: Page
+id: String
+int_id: Integer
+is_atlas_passive: Boolean
+is_attribute: Boolean
+is_free: Boolean
+is_icon_only: Boolean
+is_in_game: Boolean
+is_jewel_socket: Boolean
+is_keystone: Boolean
+is_multiple_choice: Boolean
+is_multiple_choice_option: Boolean
+is_notable: Boolean
+is_starting_node: Boolean
+main_page: Page
+name: String
+reminder_text: Text
+skill_points: Integer
+stat_text: Text
+stat_text_raw: Text
+weapon_set_points: Integer
