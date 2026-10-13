@@ -12,6 +12,7 @@ import {
   Cinzel_800ExtraBold,
   Cinzel_900Black
 } from "@expo-google-fonts/cinzel";
+
 import {
   Inter_100Thin,
   Inter_200ExtraLight,
@@ -29,10 +30,7 @@ import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import AppTabs from '@/components/app-tabs';
 
 import { getDatabase, logDatabaseTables } from '../database/database';
-import { getItemsCount } from '../database/repositories/ItemsRepository';
-import ITEMS_SYNC from '../services/sync/configs/itemsSync';
-import ITEM_STATS_SYNC from '../services/sync/configs/itemStatsSync';
-import { syncData } from '../services/sync/syncData';
+import { syncAllData } from '../services/sync/syncAllData';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -59,35 +57,12 @@ export default function TabLayout() {
   useEffect(() => {
     async function initializeItems() {
       try {
-        const database = await getDatabase();
-
-        const result = await database.getFirstAsync<{
-          status: string;
-        }>(
-          `SELECT status
-          FROM sync_state
-          WHERE dataset = 'items'`,
-        );
-
+        await getDatabase();
         await logDatabaseTables();
-
-        const count = await getItemsCount(database);
-
-        console.log('[SQLite] Registros existentes:', count);
-        console.log('[Sync] Estado anterior:', result?.status ?? 'não iniciado');
-
-
-        console.log(
-          '[Sync] Sincronização inicial ou incompleta. Iniciando...',
-        );
-
-        await syncData(ITEMS_SYNC);
-        await syncData(ITEM_STATS_SYNC);
+        const result = await syncAllData();
+        console.log('[Sync] Inicialização concluída:', result);
       } catch (error) {
-        console.error(
-          '[Sync] Erro ao inicializar os itens:',
-          error,
-        );
+        console.error('[Sync] Erro na sincronização inicial:', error);
       }
     }
 

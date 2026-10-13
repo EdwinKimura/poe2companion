@@ -20,8 +20,8 @@ import { getAppVersion, getDatabase } from '../../database/database';
 import { searchItems, type ItemSearchResult } from '../../database/repositories/ItemsRepository';
 
 import { getItemsCount } from '../../database/repositories/ItemsRepository';
-import ITEMS_SYNC from '../../services/sync/configs/itemsSync';
-import { isSyncInProgress, subscribeSyncStatus, syncData } from '../../services/sync/syncData';
+import { isSyncInProgress, subscribeSyncStatus } from '../../services/sync/syncData';
+import { syncAllData } from '../../services/sync/syncAllData';
 
 import Anvil from '@/assets/icons/anvil.svg';
 import Cogs from '@/assets/icons/cogs.svg';
@@ -108,18 +108,16 @@ export default function HomeScreen() {
         setDatabaseStatus('Conectando à Wiki...');
 
         try {
-            const saved = await syncData(ITEMS_SYNC, (progress) => {
-                setDatabaseStatus(
-                    `Processados: ${progress.toLocaleString('pt-BR')}`,
-                );
-            });
+            const result = await syncAllData({ force: true, onDatasetProgress: (dataset, saved, totalFetched) => {
+                setDatabaseStatus(`${dataset}: ${saved.toLocaleString('pt-BR')} salvos / ${totalFetched.toLocaleString('pt-BR')} recebidos`);
+            }});
 
             const database = await getDatabase();
             const total = await getItemsCount(database);
 
             setDatabaseStatus(`${total.toLocaleString('pt-BR')} itens locais`);
 
-            console.log('[Sync] Registros processados:', saved);
+            console.log('[Sync] Tabelas sincronizadas:', result.synchronized);
             console.log('[SQLite] Total no banco:', total);
         } catch (error) {
             console.error('[Sync] Erro:', error);

@@ -10,22 +10,7 @@ function assertIdentifier(identifier: string, label: string): void {
 }
 
 function toDatabaseColumn(key: string): string {
-    const aliases: Record<string, string> = {
-        id: 'id',
-        _ID: 'id',
-        pageID: 'pageID',
-        _pageID: 'pageID',
-        pageName: 'pageName',
-        _pageName: 'pageName',
-        pageTitle: 'pageTitle',
-        _pageTitle: 'pageTitle',
-        pageNamespace: 'pageNamespace',
-        _pageNamespace: 'pageNamespace',
-    };
-
-    if (aliases[key]) return aliases[key];
-
-    return key.trim().replace(/[\s-]+/g, '_').toLowerCase();
+    return key.trim().replace(/[\s-]+/g, '_');
 }
 
 function normalizeValue(value: unknown): string | number | null {

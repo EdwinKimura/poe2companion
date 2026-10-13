@@ -29,6 +29,7 @@ export const VERSION_SCHEMA = `
         patch_part INTEGER,
         previous TEXT,
         release_date TEXT,
+        release_date__precision TEXT,
         revision_part TEXT,
         version TEXT
     );
