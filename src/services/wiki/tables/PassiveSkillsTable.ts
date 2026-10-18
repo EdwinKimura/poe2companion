@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'passive_skills._ID=id',
-    'passive_skills._pageID=_pageID',
-    'passive_skills._pageName=_pageName',
+    'passive_skills._pageID=pageID',
+    'passive_skills._pageName=pageName',
     'passive_skills.ascendancy_class',
     'passive_skills.atlas_sub_tree',
     'passive_skills.buff_id',

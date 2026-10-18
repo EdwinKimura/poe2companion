@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'monster_map_multipliers._ID=id',
-    'monster_map_multipliers._pageID=_pageID',
-    'monster_map_multipliers._pageName=_pageName',
+    'monster_map_multipliers._pageID=pageID',
+    'monster_map_multipliers._pageName=pageName',
     'monster_map_multipliers.boss_damage',
     'monster_map_multipliers.boss_item_quantity',
     'monster_map_multipliers.boss_item_rarity',

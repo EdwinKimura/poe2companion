@@ -16,12 +16,10 @@ import { Fonts, SVGColors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { styles } from './home.styles';
 
-import { getAppVersion, getDatabase } from '../../database/database';
-import { searchItems, type ItemSearchResult } from '../../database/repositories/ItemsRepository';
+import { getAppVersion } from '../../database/database';
 
-import { getItemsCount } from '../../database/repositories/ItemsRepository';
-import { isSyncInProgress, subscribeSyncStatus } from '../../services/sync/syncData';
 import { syncAllData } from '../../services/sync/syncAllData';
+import { isSyncInProgress, subscribeSyncStatus } from '../../services/sync/syncData';
 
 import Anvil from '@/assets/icons/anvil.svg';
 import Cogs from '@/assets/icons/cogs.svg';
@@ -68,14 +66,10 @@ export default function HomeScreen() {
     const theme = useTheme();
     const fonts = Fonts;
 
-    const [search, setSearch] = useState('');
     const [version, setVersion] = useState('0.0.0');
     const [databaseStatus, setDatabaseStatus] = useState('Verificando...');
     const [isSyncing, setIsSyncing] = useState(isSyncInProgress());
 
-    const [searchResults, setSearchResults] = useState<ItemSearchResult[]>([]);
-    const [searchLoading, setSearchLoading] = useState(false);
-    const [searchError, setSearchError] = useState<string | null>(null);
 
     useEffect(() => {
         return subscribeSyncStatus(setIsSyncing);
@@ -83,19 +77,9 @@ export default function HomeScreen() {
 
     useEffect(() => {
         async function loadDatabaseStatus() {
-            try {
-                const database = await getDatabase();
-                const total = await getItemsCount(database);
-                const appVersion = await getAppVersion();
-
-                if (appVersion) {
-                    setVersion(`${appVersion.major}.${appVersion.minor}.${appVersion.patch}`)
-                }
-
-                setDatabaseStatus(`${total.toLocaleString('pt-BR')} itens locais`);
-            } catch (error) {
-                console.error('[SQLite] Erro ao consultar banco:', error);
-                setDatabaseStatus('Erro ao consultar banco');
+            const appVersion = await getAppVersion();
+            if (appVersion) {
+                setVersion(`${appVersion.major}.${appVersion.minor}.${appVersion.patch}`)
             }
         }
 
@@ -112,13 +96,7 @@ export default function HomeScreen() {
                 setDatabaseStatus(`${dataset}: ${saved.toLocaleString('pt-BR')} salvos / ${totalFetched.toLocaleString('pt-BR')} recebidos`);
             }});
 
-            const database = await getDatabase();
-            const total = await getItemsCount(database);
-
-            setDatabaseStatus(`${total.toLocaleString('pt-BR')} itens locais`);
-
             console.log('[Sync] Tabelas sincronizadas:', result.synchronized);
-            console.log('[SQLite] Total no banco:', total);
         } catch (error) {
             console.error('[Sync] Erro:', error);
             setDatabaseStatus('Falha na sincronização');
@@ -126,50 +104,6 @@ export default function HomeScreen() {
             setIsSyncing(false);
         }
     }
-
-    useEffect(() => {
-        const query = search.trim();
-
-        if (!query) {
-            setSearchResults([]);
-            setSearchLoading(false);
-            setSearchError(null);
-            return;
-        }
-
-        let cancelled = false;
-
-        async function loadItems() {
-            setSearchLoading(true);
-            setSearchError(null);
-
-            try {
-                const database = await getDatabase();
-                const results = await searchItems(database, query);
-
-                if (!cancelled) {
-                    setSearchResults(results);
-                }
-            } catch (error) {
-                console.error('[SQLite] Erro ao pesquisar itens:', error);
-
-                if (!cancelled) {
-                    setSearchError('Não foi possível consultar os itens locais.');
-                    setSearchResults([]);
-                }
-            } finally {
-                if (!cancelled) {
-                    setSearchLoading(false);
-                }
-            }
-        }
-
-        void loadItems();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [search]);
 
     return (
         <SafeAreaView

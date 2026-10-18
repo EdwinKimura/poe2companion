@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'jewels._ID=id',
-    'jewels._pageID=_pageID',
-    'jewels._pageName=_pageName',
+    'jewels._pageID=pageID',
+    'jewels._pageName=pageName',
     'jewels.jewel_limit',
     'jewels.radius_html',
 ] as const;

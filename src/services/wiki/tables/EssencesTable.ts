@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'essences._ID=id',
-    'essences._pageID=_pageID',
-    'essences._pageName=_pageName',
+    'essences._pageID=pageID',
+    'essences._pageName=pageName',
     'essences.category',
     'essences.level',
     'essences.level_restriction',

@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'skill_levels._ID=id',
-    'skill_levels._pageID=_pageID',
-    'skill_levels._pageName=_pageName',
+    'skill_levels._pageID=pageID',
+    'skill_levels._pageName=pageName',
     'skill_levels.attack_speed_multiplier',
     'skill_levels.attack_time',
     'skill_levels.cooldown',

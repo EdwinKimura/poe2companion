@@ -58,9 +58,11 @@ export default function TabLayout() {
     async function initializeItems() {
       try {
         await getDatabase();
-        await logDatabaseTables();
+
         const result = await syncAllData();
+        
         console.log('[Sync] Inicialização concluída:', result);
+
       } catch (error) {
         console.error('[Sync] Erro na sincronização inicial:', error);
       }
@@ -80,9 +82,7 @@ export default function TabLayout() {
   }
 
   return (
-    <ThemeProvider
-      value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-    >
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme} >
       <AnimatedSplashOverlay />
       <AppTabs />
     </ThemeProvider>

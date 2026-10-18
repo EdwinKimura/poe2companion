@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'atlas_maps._ID=id',
-    'atlas_maps._pageID=_pageID',
-    'atlas_maps._pageName=_pageName',
+    'atlas_maps._pageID=pageID',
+    'atlas_maps._pageName=pageName',
     'atlas_maps.map_tier0',
     'atlas_maps.map_tier1',
     'atlas_maps.map_tier2',

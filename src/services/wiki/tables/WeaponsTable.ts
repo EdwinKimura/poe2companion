@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'weapons._ID=id',
-    'weapons._pageID=_pageID',
-    'weapons._pageName=_pageName',
+    'weapons._pageID=pageID',
+    'weapons._pageName=pageName',
     'weapons.attack_speed',
     'weapons.attack_speed_html',
     'weapons.attack_speed_range_average',

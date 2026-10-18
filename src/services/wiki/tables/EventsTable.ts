@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'events._ID=id',
-    'events._pageID=_pageID',
-    'events._pageName=_pageName',
+    'events._pageID=pageID',
+    'events._pageName=pageName',
     'events.end_date',
     'events.id=cargo_id',
     'events.is_hardcore',

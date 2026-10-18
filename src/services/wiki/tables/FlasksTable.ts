@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'flasks._ID=id',
-    'flasks._pageID=_pageID',
-    'flasks._pageName=_pageName',
+    'flasks._pageID=pageID',
+    'flasks._pageName=pageName',
     'flasks.charges_max',
     'flasks.charges_max_html',
     'flasks.charges_max_range_average',

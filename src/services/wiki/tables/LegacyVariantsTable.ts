@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'legacy_variants._ID=id',
-    'legacy_variants._pageID=_pageID',
-    'legacy_variants._pageName=_pageName',
+    'legacy_variants._pageID=pageID',
+    'legacy_variants._pageName=pageName',
     'legacy_variants.removal_version',
     'legacy_variants.implicit_stat_text',
     'legacy_variants.explicit_stat_text',

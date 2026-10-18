@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'skill_gems._ID=id',
-    'skill_gems._pageID=_pageID',
-    'skill_gems._pageName=_pageName',
+    'skill_gems._pageID=pageID',
+    'skill_gems._pageName=pageName',
     'skill_gems.awakened_variant_id',
     'skill_gems.dexterity_percent',
     'skill_gems.gem_description',

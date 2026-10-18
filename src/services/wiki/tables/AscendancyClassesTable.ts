@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'ascendancy_classes._ID=id',
-    'ascendancy_classes._pageID=_pageID',
-    'ascendancy_classes._pageName=_pageName',
+    'ascendancy_classes._pageID=pageID',
+    'ascendancy_classes._pageName=pageName',
     'ascendancy_classes.character_class',
     'ascendancy_classes.character_id',
     'ascendancy_classes.flavour_text',

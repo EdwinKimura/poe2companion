@@ -1,0 +1,21 @@
+# Ignorar dependências e pacotes instalados
+node_modules/
+vendor/
+.venv/
+env/
+venv/
+
+# Ignorar pastas de build e cache
+dist/
+build/
+.next/
+out/
+.cache/
+coverage/
+
+# Ignorar arquivos de log e binários
+*.log
+*.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

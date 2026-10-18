@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'shields._ID=id',
-    'shields._pageID=_pageID',
-    'shields._pageName=_pageName',
+    'shields._pageID=pageID',
+    'shields._pageName=pageName',
     'shields.block',
     'shields.block_html',
     'shields.block_range_average',

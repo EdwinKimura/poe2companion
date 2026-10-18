@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'armours._ID=id',
-    'armours._pageID=_pageID',
-    'armours._pageName=_pageName',
+    'armours._pageID=pageID',
+    'armours._pageName=pageName',
     'armours.armour_html',
     'armours.armour_max',
     'armours.armour_min',

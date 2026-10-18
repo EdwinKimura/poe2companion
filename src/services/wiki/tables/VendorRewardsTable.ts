@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'vendor_rewards._ID=id',
-    'vendor_rewards._pageID=_pageID',
-    'vendor_rewards._pageName=_pageName',
+    'vendor_rewards._pageID=pageID',
+    'vendor_rewards._pageName=pageName',
     'vendor_rewards.act',
     'vendor_rewards.class_ids',
     'vendor_rewards.classes',

@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'liquid_emotions._ID=id',
-    'liquid_emotions._pageID=_pageID',
-    'liquid_emotions._pageName=_pageName',
+    'liquid_emotions._pageID=pageID',
+    'liquid_emotions._pageName=pageName',
     'liquid_emotions.modifier',
     'liquid_emotions.stat_text',
     'liquid_emotions.tier',

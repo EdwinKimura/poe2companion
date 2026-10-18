@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'areas._ID=id',
-    'areas._pageID=_pageID',
-    'areas._pageName=_pageName',
+    'areas._pageID=pageID',
+    'areas._pageName=pageName',
     'areas.act',
     'areas.adjacent_biomes',
     'areas.area_level',

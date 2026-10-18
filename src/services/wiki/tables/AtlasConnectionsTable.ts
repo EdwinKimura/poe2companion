@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'atlas_connections._ID=id',
-    'atlas_connections._pageID=_pageID',
-    'atlas_connections._pageName=_pageName',
+    'atlas_connections._pageID=pageID',
+    'atlas_connections._pageName=pageName',
     'atlas_connections.map1',
     'atlas_connections.map2',
     'atlas_connections.region0',

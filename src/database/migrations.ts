@@ -53,11 +53,17 @@ import {
     WEAPONS_SCHEMA
 } from './schema';
 
+
+/**
+ * Faz a migração de toda a base
+ * 
+ * @param database 
+ */
 export async function migrateDatabase(
     database: SQLiteDatabase,
 ): Promise<void> {
-    await database.withExclusiveTransactionAsync(async (transaction) => {
-        const result = await transaction.getFirstAsync<{ user_version: number }>(
+    await database.withTransactionAsync(async () => {
+        const result = await database.getFirstAsync<{ user_version: number }>(
             'PRAGMA user_version',
         );
 
@@ -75,58 +81,58 @@ export async function migrateDatabase(
         }
 
         if (currentVersion < DATABASE_VERSION) {
-            await transaction.execAsync(INITIAL_SCHEMA);
-            await transaction.execAsync(ITEM_SCHEMA);
-            await transaction.execAsync(ITEM_STATS_SCHEMA);
-            await transaction.execAsync(ITEM_MODS_SCHEMA);
-            await transaction.execAsync(MAPS_SCHEMA);
-            await transaction.execAsync(MAP_SERIES_SCHEMA);
-            await transaction.execAsync(MODS_SCHEMA);
-            await transaction.execAsync(MOD_STATS_SCHEMA);
-            await transaction.execAsync(MOD_SPAWN_WEIGHT_SCHEMA);
-            await transaction.execAsync(MOD_GENERATION_WEIGHT_SCHEMA);
-            await transaction.execAsync(MOD_SELL_PRICES_SCHEMA);
-            await transaction.execAsync(ITEM_SELL_PRICES_SCHEMA);
-            await transaction.execAsync(ACQUISITION_RECIPES_SCHEMA);
-            await transaction.execAsync(ACQUISITION_RECIPES_PARTS_SCHEMA);
-            await transaction.execAsync(VENDOR_REWARDS_SCHEMA);
-            await transaction.execAsync(STACKABLES_SCHEMA);
-            await transaction.execAsync(SHIELDS_SCHEMA);
-            await transaction.execAsync(QUEST_REWARDS_SCHEMA);
-            await transaction.execAsync(ITEM_BUFFS_SCHEMA);
-            await transaction.execAsync(HIDEOUT_DOODADS_SCHEMA);
-            await transaction.execAsync(FLASKS_SCHEMA);
-            await transaction.execAsync(ESSENCES_SCHEMA);
-            await transaction.execAsync(COSMETIC_ITEMS_SCHEMA);
-            await transaction.execAsync(ATLAS_MAPS_SCHEMA);
-            await transaction.execAsync(ATLAS_CONNECTIONS_SCHEMA);
-            await transaction.execAsync(SKILL_SCHEMA);
-            await transaction.execAsync(SKILL_STATS_PER_LEVEL_SCHEMA);
-            await transaction.execAsync(SKILL_LEVELS_SCHEMA);
-            await transaction.execAsync(ASCENDANCY_CLASSES_SCHEMA);
-            await transaction.execAsync(MONSTERS_SCHEMA);
-            await transaction.execAsync(MONSTER_TYPES_SCHEMA);
-            await transaction.execAsync(MONSTER_RESISTANCES_SCHEMA);
-            await transaction.execAsync(MONSTER_MAP_MULTIPLIERS_SCHEMA);
-            await transaction.execAsync(SKKIASTESTDICTIONARY_SCHEMA);
-            await transaction.execAsync(EVENTS_SCHEMA);
-            await transaction.execAsync(LEGACY_VARIANTS_SCHEMA);
-            await transaction.execAsync(ARMOURS_SCHEMA);
-            await transaction.execAsync(WEAPONS_SCHEMA);
-            await transaction.execAsync(SKILL_GEMS_SCHEMA);
-            await transaction.execAsync(LIQUID_EMOTIONS_SCHEMA);
-            await transaction.execAsync(MAP_FRAGMENTS_SCHEMA);
-            await transaction.execAsync(JEWELS_SCHEMA);
-            await transaction.execAsync(INHERENT_SKILLS_SCHEMA);
-            await transaction.execAsync(AREAS_SCHEMA);
-            await transaction.execAsync(GUIDES_SCHEMA);
-            await transaction.execAsync(PASSIVE_SKILL_STATS_SCHEMA);
-            await transaction.execAsync(AUGMENTS_SCHEMA);
-            await transaction.execAsync(PASSIVE_SKILLS_SCHEMA);
-            await transaction.execAsync(VERSION_SCHEMA);
+            await database.execAsync(INITIAL_SCHEMA);
+            await database.execAsync(ITEM_SCHEMA);
+            await database.execAsync(ITEM_STATS_SCHEMA);
+            await database.execAsync(ITEM_MODS_SCHEMA);
+            await database.execAsync(MAPS_SCHEMA);
+            await database.execAsync(MAP_SERIES_SCHEMA);
+            await database.execAsync(MODS_SCHEMA);
+            await database.execAsync(MOD_STATS_SCHEMA);
+            await database.execAsync(MOD_SPAWN_WEIGHT_SCHEMA);
+            await database.execAsync(MOD_GENERATION_WEIGHT_SCHEMA);
+            await database.execAsync(MOD_SELL_PRICES_SCHEMA);
+            await database.execAsync(ITEM_SELL_PRICES_SCHEMA);
+            await database.execAsync(ACQUISITION_RECIPES_SCHEMA);
+            await database.execAsync(ACQUISITION_RECIPES_PARTS_SCHEMA);
+            await database.execAsync(VENDOR_REWARDS_SCHEMA);
+            await database.execAsync(STACKABLES_SCHEMA);
+            await database.execAsync(SHIELDS_SCHEMA);
+            await database.execAsync(QUEST_REWARDS_SCHEMA);
+            await database.execAsync(ITEM_BUFFS_SCHEMA);
+            await database.execAsync(HIDEOUT_DOODADS_SCHEMA);
+            await database.execAsync(FLASKS_SCHEMA);
+            await database.execAsync(ESSENCES_SCHEMA);
+            await database.execAsync(COSMETIC_ITEMS_SCHEMA);
+            await database.execAsync(ATLAS_MAPS_SCHEMA);
+            await database.execAsync(ATLAS_CONNECTIONS_SCHEMA);
+            await database.execAsync(SKILL_SCHEMA);
+            await database.execAsync(SKILL_STATS_PER_LEVEL_SCHEMA);
+            await database.execAsync(SKILL_LEVELS_SCHEMA);
+            await database.execAsync(ASCENDANCY_CLASSES_SCHEMA);
+            await database.execAsync(MONSTERS_SCHEMA);
+            await database.execAsync(MONSTER_TYPES_SCHEMA);
+            await database.execAsync(MONSTER_RESISTANCES_SCHEMA);
+            await database.execAsync(MONSTER_MAP_MULTIPLIERS_SCHEMA);
+            await database.execAsync(SKKIASTESTDICTIONARY_SCHEMA);
+            await database.execAsync(EVENTS_SCHEMA);
+            await database.execAsync(LEGACY_VARIANTS_SCHEMA);
+            await database.execAsync(ARMOURS_SCHEMA);
+            await database.execAsync(WEAPONS_SCHEMA);
+            await database.execAsync(SKILL_GEMS_SCHEMA);
+            await database.execAsync(LIQUID_EMOTIONS_SCHEMA);
+            await database.execAsync(MAP_FRAGMENTS_SCHEMA);
+            await database.execAsync(JEWELS_SCHEMA);
+            await database.execAsync(INHERENT_SKILLS_SCHEMA);
+            await database.execAsync(AREAS_SCHEMA);
+            await database.execAsync(GUIDES_SCHEMA);
+            await database.execAsync(PASSIVE_SKILL_STATS_SCHEMA);
+            await database.execAsync(AUGMENTS_SCHEMA);
+            await database.execAsync(PASSIVE_SKILLS_SCHEMA);
+            await database.execAsync(VERSION_SCHEMA);
         }
 
-        await transaction.execAsync(
+        await database.execAsync(
             `PRAGMA user_version = ${DATABASE_VERSION}`,
         );
     });

@@ -2,8 +2,8 @@ import type { CargoTable } from '../types/table.type';
 
 const FIELDS = [
     'stackables._ID=id',
-    'stackables._pageID=_pageID',
-    'stackables._pageName=_pageName',
+    'stackables._pageID=pageID',
+    'stackables._pageName=pageName',
     'stackables.stack_size',
     'stackables.stack_size_currency_tab',
 ] as const;

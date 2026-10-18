@@ -1,6 +1,9 @@
 import Constants from 'expo-constants';
 import * as SQLite from 'expo-sqlite';
 
+import { parseAppVersion } from '@/database/handlers/normalizeHandler';
+import { isNewerVersion, shouldResetDatabase } from '@/database/handlers/validationHandler';
+import { AppVersion } from '@/database/types/database.type';
 import { migrateDatabase } from './migrations';
 import { DATABASE_NAME } from './schema';
 
@@ -8,56 +11,6 @@ let databasePromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
 const APP_VERSION = Constants.expoConfig?.version ?? '0.0.0';
 
-type AppVersion = {
-    major: number;
-    minor: number;
-    patch: number;
-};
-
-function parseAppVersion(version: string): AppVersion {
-    const match = version.match(/^(\d+)\.(\d+)\.(\d+)$/);
-
-    if (!match) {
-        throw new Error(
-            `Versão inválida em expo.version: "${version}". ` +
-            'Use o formato MAJOR.MINOR.PATCH, por exemplo 0.0.1.',
-        );
-    }
-
-    return {
-        major: Number(match[1]),
-        minor: Number(match[2]),
-        patch: Number(match[3]),
-    };
-}
-
-function shouldResetDatabase(
-    currentVersion: AppVersion,
-    savedVersion: AppVersion,
-): boolean {
-    return (
-        currentVersion.major > savedVersion.major ||
-        (
-            currentVersion.major === savedVersion.major &&
-            currentVersion.minor > savedVersion.minor
-        )
-    );
-}
-
-function isNewerVersion(
-    currentVersion: AppVersion,
-    savedVersion: AppVersion,
-): boolean {
-    if (currentVersion.major !== savedVersion.major) {
-        return currentVersion.major > savedVersion.major;
-    }
-
-    if (currentVersion.minor !== savedVersion.minor) {
-        return currentVersion.minor > savedVersion.minor;
-    }
-
-    return currentVersion.patch > savedVersion.patch;
-}
 
 /**
  * Exclui o banco apenas quando a versão MAJOR ou MINOR do aplicativo
@@ -66,6 +19,7 @@ function isNewerVersion(
 async function resetDatabaseForAppVersionIfNeeded(): Promise<void> {
     const database = await SQLite.openDatabaseAsync(DATABASE_NAME);
     let shouldDelete = false;
+    database.execSync('PRAGMA journal_mode = WAL;');
 
     try {
         await database.execAsync('PRAGMA busy_timeout = 5000;');
@@ -111,6 +65,10 @@ async function resetDatabaseForAppVersionIfNeeded(): Promise<void> {
     }
 }
 
+/**
+ * 
+ * @returns 
+ */
 async function initializeDatabase(): Promise<SQLite.SQLiteDatabase> {
     // A comparação acontece antes das migrations e sem manter outra
     // conexão aberta durante a exclusão.
@@ -119,7 +77,9 @@ async function initializeDatabase(): Promise<SQLite.SQLiteDatabase> {
     const database = await SQLite.openDatabaseAsync(DATABASE_NAME);
 
     try {
-        await database.execAsync('PRAGMA busy_timeout = 5000;');
+        await database.execAsync('PRAGMA busy_timeout = 10000;');
+        // WAL permite que leituras da interface ocorram enquanto a sincronização grava lotes.
+        await database.execAsync('PRAGMA journal_mode = WAL;');
 
         // O PRAGMA user_version continua controlando as migrations.
         await migrateDatabase(database);
@@ -167,6 +127,11 @@ async function initializeDatabase(): Promise<SQLite.SQLiteDatabase> {
     }
 }
 
+
+/**
+ * 
+ * @returns 
+ */
 export function getDatabase(): Promise<SQLite.SQLiteDatabase> {
     if (!databasePromise) {
         const initialization = initializeDatabase();
@@ -182,19 +147,9 @@ export function getDatabase(): Promise<SQLite.SQLiteDatabase> {
     return databasePromise;
 }
 
-export async function resetDatabase(): Promise<void> {
-    if (databasePromise) {
-        const database = await databasePromise;
-
-        await database.closeAsync();
-        databasePromise = null;
-    }
-
-    await SQLite.deleteDatabaseAsync(DATABASE_NAME);
-
-    await getDatabase();
-}
-
+/**
+ * Retorna as bases existentes
+ */
 export async function logDatabaseTables(): Promise<void> {
     const database = await getDatabase();
 
@@ -214,6 +169,10 @@ export async function logDatabaseTables(): Promise<void> {
     }
 }
 
+/**
+ * 
+ * @returns 
+ */
 export async function getAppVersion() {
     const database = await getDatabase();
     const savedAppVersion = await database.getFirstAsync<{ value: string }>(

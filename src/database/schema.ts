@@ -123,7 +123,7 @@ export const ITEM_SCHEMA = `
         tags TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_items_pageid ON items (pageID);
+    CREATE INDEX IF NOT EXISTS idx_itemspageID ON items (pageID);
     CREATE INDEX IF NOT EXISTS idx_items_name_value ON items (name);
     CREATE INDEX IF NOT EXISTS idx_items_base_item_id ON items (base_item_id);
     CREATE INDEX IF NOT EXISTS idx_items_metadata_id ON items (metadata_id);
@@ -145,8 +145,8 @@ export const ITEM_STATS_SCHEMA = `
         cargo_id TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_item_stats_pagename ON item_stats (pageName);
-    CREATE INDEX IF NOT EXISTS idx_item_stats_pageid ON item_stats (pageID);
+    CREATE INDEX IF NOT EXISTS idx_item_statspageName ON item_stats (pageName);
+    CREATE INDEX IF NOT EXISTS idx_item_statspageID ON item_stats (pageID);
     CREATE INDEX IF NOT EXISTS idx_item_stats_mod_id ON item_stats (mod_id);
 `;
 
@@ -163,8 +163,8 @@ export const ITEM_MODS_SCHEMA = `
         cargo_id TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_item_mods_pagename ON item_mods (pageName);
-    CREATE INDEX IF NOT EXISTS idx_item_mods_pageid ON item_mods (pageID);
+    CREATE INDEX IF NOT EXISTS idx_item_modspageName ON item_mods (pageName);
+    CREATE INDEX IF NOT EXISTS idx_item_modspageID ON item_mods (pageID);
 `;
 
 export const MAPS_SCHEMA = `
@@ -182,8 +182,8 @@ export const MAPS_SCHEMA = `
         unique_guild_character TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_maps_pagename ON maps (pageName);
-    CREATE INDEX IF NOT EXISTS idx_maps_pageid ON maps (pageID);
+    CREATE INDEX IF NOT EXISTS idx_mapspageName ON maps (pageName);
+    CREATE INDEX IF NOT EXISTS idx_mapspageID ON maps (pageID);
     CREATE INDEX IF NOT EXISTS idx_maps_area_id ON maps (area_id);
     CREATE INDEX IF NOT EXISTS idx_maps_unique_area_id ON maps (unique_area_id);
     CREATE INDEX IF NOT EXISTS idx_maps_series ON maps (series);
@@ -199,8 +199,8 @@ export const MAP_SERIES_SCHEMA = `
         cargo_id TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_map_series_pagename ON map_series (pageName);
-    CREATE INDEX IF NOT EXISTS idx_map_series_pageid ON map_series (pageID);
+    CREATE INDEX IF NOT EXISTS idx_map_seriespageName ON map_series (pageName);
+    CREATE INDEX IF NOT EXISTS idx_map_seriespageID ON map_series (pageID);
     CREATE INDEX IF NOT EXISTS idx_map_series_name ON map_series (name);
 `;
 
@@ -225,8 +225,8 @@ export const MODS_SCHEMA = `
         cargo_id TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_mods_pagename ON mods (pageName);
-    CREATE INDEX IF NOT EXISTS idx_mods_pageid ON mods (pageID);
+    CREATE INDEX IF NOT EXISTS idx_modspageName ON mods (pageName);
+    CREATE INDEX IF NOT EXISTS idx_modspageID ON mods (pageID);
     CREATE INDEX IF NOT EXISTS idx_mods_name ON mods (name);
     CREATE INDEX IF NOT EXISTS idx_mods_granted_buff_id ON mods (granted_buff_id);
 `;
@@ -241,8 +241,8 @@ export const MOD_STATS_SCHEMA = `
         cargo_id TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_mod_stats_pagename ON mod_stats (pageName);
-    CREATE INDEX IF NOT EXISTS idx_mod_stats_pageid ON mod_stats (pageID);
+    CREATE INDEX IF NOT EXISTS idx_mod_statspageName ON mod_stats (pageName);
+    CREATE INDEX IF NOT EXISTS idx_mod_statspageID ON mod_stats (pageID);
 `;
 
 export const MOD_SPAWN_WEIGHT_SCHEMA = `
@@ -255,8 +255,8 @@ export const MOD_SPAWN_WEIGHT_SCHEMA = `
         tag TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_mod_spawn_weights_pagename ON mod_spawn_weights (pageName);
-    CREATE INDEX IF NOT EXISTS idx_mod_spawn_weights_pageid ON mod_spawn_weights (pageID);
+    CREATE INDEX IF NOT EXISTS idx_mod_spawn_weightspageName ON mod_spawn_weights (pageName);
+    CREATE INDEX IF NOT EXISTS idx_mod_spawn_weightspageID ON mod_spawn_weights (pageID);
     CREATE INDEX IF NOT EXISTS idx_mod_spawn_weights_tag ON mod_spawn_weights (tag);
 `;
 
@@ -270,8 +270,8 @@ export const MOD_GENERATION_WEIGHT_SCHEMA = `
         tag TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_mod_generation_weights_pagename ON mod_generation_weights (pageName);
-    CREATE INDEX IF NOT EXISTS idx_mod_generation_weights_pageid ON mod_generation_weights (pageID);
+    CREATE INDEX IF NOT EXISTS idx_mod_generation_weightspageName ON mod_generation_weights (pageName);
+    CREATE INDEX IF NOT EXISTS idx_mod_generation_weightspageID ON mod_generation_weights (pageID);
     CREATE INDEX IF NOT EXISTS idx_mod_generation_weights_tag ON mod_generation_weights (tag);
 `;
 
@@ -284,8 +284,8 @@ export const MOD_SELL_PRICES_SCHEMA = `
         name TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_mod_sell_prices_pagename ON mod_sell_prices (pageName);
-    CREATE INDEX IF NOT EXISTS idx_mod_sell_prices_pageid ON mod_sell_prices (pageID);
+    CREATE INDEX IF NOT EXISTS idx_mod_sell_pricespageName ON mod_sell_prices (pageName);
+    CREATE INDEX IF NOT EXISTS idx_mod_sell_pricespageID ON mod_sell_prices (pageID);
     CREATE INDEX IF NOT EXISTS idx_mod_sell_prices_name ON mod_sell_prices (name);
 `;
 
@@ -298,8 +298,8 @@ export const ITEM_SELL_PRICES_SCHEMA = `
         name TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_item_sell_prices_pagename ON item_sell_prices (pageName);
-    CREATE INDEX IF NOT EXISTS idx_item_sell_prices_pageid ON item_sell_prices (pageID);
+    CREATE INDEX IF NOT EXISTS idx_item_sell_pricespageName ON item_sell_prices (pageName);
+    CREATE INDEX IF NOT EXISTS idx_item_sell_pricespageID ON item_sell_prices (pageID);
     CREATE INDEX IF NOT EXISTS idx_item_sell_prices_name ON item_sell_prices (name);
 `;
 
@@ -314,8 +314,8 @@ export const ACQUISITION_RECIPES_SCHEMA = `
         result_amount INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_acquisition_recipes_pagename ON acquisition_recipes (pageName);
-    CREATE INDEX IF NOT EXISTS idx_acquisition_recipes_pageid ON acquisition_recipes (pageID);
+    CREATE INDEX IF NOT EXISTS idx_acquisition_recipespageName ON acquisition_recipes (pageName);
+    CREATE INDEX IF NOT EXISTS idx_acquisition_recipespageID ON acquisition_recipes (pageID);
     CREATE INDEX IF NOT EXISTS idx_acquisition_recipes_recipe_id ON acquisition_recipes (recipe_id);
 `;
 
@@ -333,8 +333,8 @@ export const ACQUISITION_RECIPES_PARTS_SCHEMA = `
         recipe_id INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_acquisition_recipe_parts_pagename ON acquisition_recipe_parts (pageName);
-    CREATE INDEX IF NOT EXISTS idx_acquisition_recipe_parts_pageid ON acquisition_recipe_parts (pageID);
+    CREATE INDEX IF NOT EXISTS idx_acquisition_recipe_partspageName ON acquisition_recipe_parts (pageName);
+    CREATE INDEX IF NOT EXISTS idx_acquisition_recipe_partspageID ON acquisition_recipe_parts (pageID);
     CREATE INDEX IF NOT EXISTS idx_acquisition_recipe_parts_recipe_id ON acquisition_recipe_parts (recipe_id);
     CREATE INDEX IF NOT EXISTS idx_acquisition_recipe_parts_item_id ON acquisition_recipe_parts (item_id);
     CREATE INDEX IF NOT EXISTS idx_acquisition_recipe_parts_item_page ON acquisition_recipe_parts (item_page);
@@ -343,8 +343,8 @@ export const ACQUISITION_RECIPES_PARTS_SCHEMA = `
 export const VENDOR_REWARDS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS vendor_rewards (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         act INTEGER,
         class_ids TEXT,
         classes TEXT,
@@ -353,8 +353,8 @@ export const VENDOR_REWARDS_SCHEMA = `
         quest_id TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_vendor_rewards_pagename ON vendor_rewards (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_vendor_rewards_pageid ON vendor_rewards (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_vendor_rewardspageName ON vendor_rewards (pageName);
+    CREATE INDEX IF NOT EXISTS idx_vendor_rewardspageID ON vendor_rewards (pageID);
     CREATE INDEX IF NOT EXISTS idx_vendor_rewards_quest_id ON vendor_rewards (quest_id);
     CREATE INDEX IF NOT EXISTS idx_vendor_rewards_act ON vendor_rewards (act);
 `;
@@ -362,21 +362,21 @@ export const VENDOR_REWARDS_SCHEMA = `
 export const STACKABLES_SCHEMA = `
     CREATE TABLE IF NOT EXISTS stackables (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         stack_size INTEGER,
         stack_size_currency_tab INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_stackables_pagename ON stackables (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_stackables_pageid ON stackables (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_stackablespageName ON stackables (pageName);
+    CREATE INDEX IF NOT EXISTS idx_stackablespageID ON stackables (pageID);
 `;
 
 export const SHIELDS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS shields (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         block INTEGER,
         block_html TEXT,
         block_range_average INTEGER,
@@ -386,15 +386,15 @@ export const SHIELDS_SCHEMA = `
         block_range_text TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_shields_pagename ON shields (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_shields_pageid ON shields (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_shieldspageName ON shields (pageName);
+    CREATE INDEX IF NOT EXISTS idx_shieldspageID ON shields (pageID);
 `;
 
 export const QUEST_REWARDS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS quest_rewards (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         act INTEGER,
         class_ids TEXT,
         classes TEXT,
@@ -406,8 +406,8 @@ export const QUEST_REWARDS_SCHEMA = `
         sockets INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_quest_rewards_pagename ON quest_rewards (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_quest_rewards_pageid ON quest_rewards (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_quest_rewardspageName ON quest_rewards (pageName);
+    CREATE INDEX IF NOT EXISTS idx_quest_rewardspageID ON quest_rewards (pageID);
     CREATE INDEX IF NOT EXISTS idx_quest_rewards_quest_id ON quest_rewards (quest_id);
     CREATE INDEX IF NOT EXISTS idx_quest_rewards_act ON quest_rewards (act);
 `;
@@ -415,37 +415,37 @@ export const QUEST_REWARDS_SCHEMA = `
 export const ITEM_BUFFS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS item_buffs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         buff_values TEXT,
         icon TEXT,
         cargo_id TEXT,
         stat_text TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_item_buffs_pagename ON item_buffs (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_item_buffs_pageid ON item_buffs (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_item_buffspageName ON item_buffs (pageName);
+    CREATE INDEX IF NOT EXISTS idx_item_buffspageID ON item_buffs (pageID);
     CREATE INDEX IF NOT EXISTS idx_item_buffs_cargo_id ON item_buffs (cargo_id);
 `;
 
 export const HIDEOUT_DOODADS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS hideout_doodads (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         is_master_doodad INTEGER,
         variation_count INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_hideout_doodads_pagename ON hideout_doodads (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_hideout_doodads_pageid ON hideout_doodads (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_hideout_doodadspageName ON hideout_doodads (pageName);
+    CREATE INDEX IF NOT EXISTS idx_hideout_doodadspageID ON hideout_doodads (pageID);
 `;
 
 export const FLASKS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS flasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         charges_max INTEGER,
         charges_max_html TEXT,
         charges_max_range_average INTEGER,
@@ -483,46 +483,46 @@ export const FLASKS_SCHEMA = `
         mana_range_text TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_flasks_pagename ON flasks (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_flasks_pageid ON flasks (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_flaskspageName ON flasks (pageName);
+    CREATE INDEX IF NOT EXISTS idx_flaskspageID ON flasks (pageID);
 `;
 
 export const ESSENCES_SCHEMA = `
     CREATE TABLE IF NOT EXISTS essences (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         category TEXT,
         level INTEGER,
         level_restriction INTEGER,
         type INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_essences_pagename ON essences (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_essences_pageid ON essences (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_essencespageName ON essences (pageName);
+    CREATE INDEX IF NOT EXISTS idx_essencespageID ON essences (pageID);
     CREATE INDEX IF NOT EXISTS idx_essences_category ON essences (category);
 `;
 
 export const COSMETIC_ITEMS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS cosmetic_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         cosmetic_type TEXT,
         target TEXT,
         theme TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_cosmetic_items_pagename ON cosmetic_items (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_cosmetic_items_pageid ON cosmetic_items (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_cosmetic_itemspageName ON cosmetic_items (pageName);
+    CREATE INDEX IF NOT EXISTS idx_cosmetic_itemspageID ON cosmetic_items (pageID);
     CREATE INDEX IF NOT EXISTS idx_cosmetic_items_cosmetic_type ON cosmetic_items (cosmetic_type);
 `;
 
 export const ATLAS_MAPS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS atlas_maps (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         map_tier0 INTEGER,
         map_tier1 INTEGER,
         map_tier2 INTEGER,
@@ -544,16 +544,16 @@ export const ATLAS_MAPS_SCHEMA = `
         y4 REAL
     );
 
-    CREATE INDEX IF NOT EXISTS idx_atlas_maps_pagename ON atlas_maps (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_atlas_maps_pageid ON atlas_maps (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_atlas_mapspageName ON atlas_maps (pageName);
+    CREATE INDEX IF NOT EXISTS idx_atlas_mapspageID ON atlas_maps (pageID);
     CREATE INDEX IF NOT EXISTS idx_atlas_maps_region_id ON atlas_maps (region_id);
 `;
 
 export const ATLAS_CONNECTIONS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS atlas_connections (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         map1 TEXT,
         map2 TEXT,
         region0 INTEGER,
@@ -563,8 +563,8 @@ export const ATLAS_CONNECTIONS_SCHEMA = `
         region4 INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_atlas_connections_pagename ON atlas_connections (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_atlas_connections_pageid ON atlas_connections (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_atlas_connectionspageName ON atlas_connections (pageName);
+    CREATE INDEX IF NOT EXISTS idx_atlas_connectionspageID ON atlas_connections (pageID);
     CREATE INDEX IF NOT EXISTS idx_atlas_connections_map1 ON atlas_connections (map1);
     CREATE INDEX IF NOT EXISTS idx_atlas_connections_map2 ON atlas_connections (map2);
 `;
@@ -572,8 +572,8 @@ export const ATLAS_CONNECTIONS_SCHEMA = `
 export const SKILL_SCHEMA = `
     CREATE TABLE IF NOT EXISTS skill (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         active_skill_name TEXT,
         cast_time REAL,
         description TEXT,
@@ -594,8 +594,8 @@ export const SKILL_SCHEMA = `
         stat_text TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_skill_pagename ON skill (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_skill_pageid ON skill (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_skillpageName ON skill (pageName);
+    CREATE INDEX IF NOT EXISTS idx_skillpageID ON skill (pageID);
     CREATE INDEX IF NOT EXISTS idx_skill_skill_id ON skill (skill_id);
     CREATE INDEX IF NOT EXISTS idx_skill_active_skill_name ON skill (active_skill_name);
 `;
@@ -603,15 +603,15 @@ export const SKILL_SCHEMA = `
 export const SKILL_STATS_PER_LEVEL_SCHEMA = `
     CREATE TABLE IF NOT EXISTS skill_stats_per_level (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         cargo_id TEXT,
         level INTEGER,
         value INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_skill_stats_per_level_pagename ON skill_stats_per_level (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_skill_stats_per_level_pageid ON skill_stats_per_level (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_skill_stats_per_levelpageName ON skill_stats_per_level (pageName);
+    CREATE INDEX IF NOT EXISTS idx_skill_stats_per_levelpageID ON skill_stats_per_level (pageID);
     CREATE INDEX IF NOT EXISTS idx_skill_stats_per_level_cargo_id ON skill_stats_per_level (cargo_id);
     CREATE INDEX IF NOT EXISTS idx_skill_stats_per_level_level ON skill_stats_per_level (level);
 `;
@@ -619,8 +619,8 @@ export const SKILL_STATS_PER_LEVEL_SCHEMA = `
 export const SKILL_LEVELS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS skill_levels (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         attack_speed_multiplier INTEGER,
         attack_time REAL,
         cooldown REAL,
@@ -649,16 +649,16 @@ export const SKILL_LEVELS_SCHEMA = `
         vaal_stored_uses INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_skill_levels_pagename ON skill_levels (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_skill_levels_pageid ON skill_levels (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_skill_levelspageName ON skill_levels (pageName);
+    CREATE INDEX IF NOT EXISTS idx_skill_levelspageID ON skill_levels (pageID);
     CREATE INDEX IF NOT EXISTS idx_skill_levels_level ON skill_levels (level);
 `;
 
 export const ASCENDANCY_CLASSES_SCHEMA = `
     CREATE TABLE IF NOT EXISTS ascendancy_classes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         character_class TEXT,
         character_id INTEGER,
         flavour_text TEXT,
@@ -666,8 +666,8 @@ export const ASCENDANCY_CLASSES_SCHEMA = `
         name TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_ascendancy_classes_pagename ON ascendancy_classes (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_ascendancy_classes_pageid ON ascendancy_classes (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_ascendancy_classespageName ON ascendancy_classes (pageName);
+    CREATE INDEX IF NOT EXISTS idx_ascendancy_classespageID ON ascendancy_classes (pageID);
     CREATE INDEX IF NOT EXISTS idx_ascendancy_classes_cargo_id ON ascendancy_classes (cargo_id);
     CREATE INDEX IF NOT EXISTS idx_ascendancy_classes_character_id ON ascendancy_classes (character_id);
     CREATE INDEX IF NOT EXISTS idx_ascendancy_classes_name ON ascendancy_classes (name);
@@ -676,8 +676,8 @@ export const ASCENDANCY_CLASSES_SCHEMA = `
 export const MONSTERS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS monsters (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         attack_speed REAL,
         critical_strike_chance REAL,
         damage_multiplier REAL,
@@ -701,8 +701,8 @@ export const MONSTERS_SCHEMA = `
         tags TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_monsters_pagename ON monsters (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_monsters_pageid ON monsters (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_monsterspageName ON monsters (pageName);
+    CREATE INDEX IF NOT EXISTS idx_monsterspageID ON monsters (pageID);
     CREATE INDEX IF NOT EXISTS idx_monsters_metadata_id ON monsters (metadata_id);
     CREATE INDEX IF NOT EXISTS idx_monsters_monster_type_id ON monsters (monster_type_id);
     CREATE INDEX IF NOT EXISTS idx_monsters_name ON monsters (name);
@@ -712,8 +712,8 @@ export const MONSTERS_SCHEMA = `
 export const MONSTER_TYPES_SCHEMA = `
     CREATE TABLE IF NOT EXISTS monster_types (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         armour_multiplier REAL,
         damage_spread REAL,
         energy_shield_multiplier REAL,
@@ -723,8 +723,8 @@ export const MONSTER_TYPES_SCHEMA = `
         tags TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_monster_types_pagename ON monster_types (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_monster_types_pageid ON monster_types (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_monster_typespageName ON monster_types (pageName);
+    CREATE INDEX IF NOT EXISTS idx_monster_typespageID ON monster_types (pageID);
     CREATE INDEX IF NOT EXISTS idx_monster_types_cargo_id ON monster_types (cargo_id);
     CREATE INDEX IF NOT EXISTS idx_monster_types_monster_resistance_id ON monster_types (monster_resistance_id);
 `;
@@ -732,8 +732,8 @@ export const MONSTER_TYPES_SCHEMA = `
 export const MONSTER_RESISTANCES_SCHEMA = `
     CREATE TABLE IF NOT EXISTS monster_resistances (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         cargo_id TEXT,
         maps_chaos INTEGER,
         maps_cold INTEGER,
@@ -749,16 +749,16 @@ export const MONSTER_RESISTANCES_SCHEMA = `
         part2_lightning INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_monster_resistances_pagename ON monster_resistances (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_monster_resistances_pageid ON monster_resistances (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_monster_resistancespageName ON monster_resistances (pageName);
+    CREATE INDEX IF NOT EXISTS idx_monster_resistancespageID ON monster_resistances (pageID);
     CREATE INDEX IF NOT EXISTS idx_monster_resistances_cargo_id ON monster_resistances (cargo_id);
 `;
 
 export const MONSTER_MAP_MULTIPLIERS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS monster_map_multipliers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         boss_damage INTEGER,
         boss_item_quantity INTEGER,
         boss_item_rarity INTEGER,
@@ -768,23 +768,23 @@ export const MONSTER_MAP_MULTIPLIERS_SCHEMA = `
         life INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_monster_map_multipliers_pagename ON monster_map_multipliers (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_monster_map_multipliers_pageid ON monster_map_multipliers (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_monster_map_multiplierspageName ON monster_map_multipliers (pageName);
+    CREATE INDEX IF NOT EXISTS idx_monster_map_multiplierspageID ON monster_map_multipliers (pageID);
     CREATE INDEX IF NOT EXISTS idx_monster_map_multipliers_level ON monster_map_multipliers (level);
 `;
 
 export const SKKIASTESTDICTIONARY_SCHEMA = `
     CREATE TABLE IF NOT EXISTS skkiastestdictionary (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         Term TEXT,
         Category TEXT,
         Definition TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_skkiastestdictionary_pagename ON skkiastestdictionary (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_skkiastestdictionary_pageid ON skkiastestdictionary (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_skkiastestdictionarypageName ON skkiastestdictionary (pageName);
+    CREATE INDEX IF NOT EXISTS idx_skkiastestdictionarypageID ON skkiastestdictionary (pageID);
     CREATE INDEX IF NOT EXISTS idx_skkiastestdictionary_term ON skkiastestdictionary (Term);
     CREATE INDEX IF NOT EXISTS idx_skkiastestdictionary_category ON skkiastestdictionary (Category);
 `;
@@ -792,8 +792,8 @@ export const SKKIASTESTDICTIONARY_SCHEMA = `
 export const EVENTS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS events (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         end_date TEXT,
         cargo_id TEXT,
         is_hardcore INTEGER,
@@ -807,11 +807,13 @@ export const EVENTS_SCHEMA = `
         release_version TEXT,
         rewards TEXT,
         short_name TEXT,
-        type TEXT
+        type TEXT,
+        end_date__precision TEXT,
+        release_date__precision TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_events_pagename ON events (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_events_pageid ON events (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_eventspageName ON events (pageName);
+    CREATE INDEX IF NOT EXISTS idx_eventspageID ON events (pageID);
     CREATE INDEX IF NOT EXISTS idx_events_cargo_id ON events (cargo_id);
     CREATE INDEX IF NOT EXISTS idx_events_short_name ON events (short_name);
     CREATE INDEX IF NOT EXISTS idx_events_name ON events (name);
@@ -820,8 +822,8 @@ export const EVENTS_SCHEMA = `
 export const LEGACY_VARIANTS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS legacy_variants (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         removal_version TEXT,
         implicit_stat_text TEXT,
         explicit_stat_text TEXT,
@@ -830,16 +832,16 @@ export const LEGACY_VARIANTS_SCHEMA = `
         required_level INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_legacy_variants_pagename ON legacy_variants (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_legacy_variants_pageid ON legacy_variants (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_legacy_variantspageName ON legacy_variants (pageName);
+    CREATE INDEX IF NOT EXISTS idx_legacy_variantspageID ON legacy_variants (pageID);
     CREATE INDEX IF NOT EXISTS idx_legacy_variants_base_item ON legacy_variants (base_item);
 `;
 
 export const ARMOURS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS armours (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         armour_html TEXT,
         armour_max INTEGER,
         armour_min INTEGER,
@@ -875,15 +877,15 @@ export const ARMOURS_SCHEMA = `
         ward_range_text TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_armours_pagename ON armours (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_armours_pageid ON armours (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_armourspageName ON armours (pageName);
+    CREATE INDEX IF NOT EXISTS idx_armourspageID ON armours (pageID);
 `;
 
 export const WEAPONS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS weapons (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         attack_speed REAL,
         attack_speed_html TEXT,
         attack_speed_range_average REAL,
@@ -1046,15 +1048,15 @@ export const WEAPONS_SCHEMA = `
         weapon_range_range_text TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_weapons_pagename ON weapons (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_weapons_pageid ON weapons (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_weaponspageName ON weapons (pageName);
+    CREATE INDEX IF NOT EXISTS idx_weaponspageID ON weapons (pageID);
 `;
 
 export const SKILL_GEMS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS skill_gems (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         awakened_variant_id TEXT,
         dexterity_percent INTEGER,
         gem_description TEXT,
@@ -1068,8 +1070,8 @@ export const SKILL_GEMS_SCHEMA = `
         vaal_variant_id TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_skill_gems_pagename ON skill_gems (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_skill_gems_pageid ON skill_gems (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_skill_gemspageName ON skill_gems (pageName);
+    CREATE INDEX IF NOT EXISTS idx_skill_gemspageID ON skill_gems (pageID);
     CREATE INDEX IF NOT EXISTS idx_skill_gems_awakened_variant_id ON skill_gems (awakened_variant_id);
     CREATE INDEX IF NOT EXISTS idx_skill_gems_vaal_variant_id ON skill_gems (vaal_variant_id);
 `;
@@ -1077,61 +1079,61 @@ export const SKILL_GEMS_SCHEMA = `
 export const LIQUID_EMOTIONS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS liquid_emotions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         modifier TEXT,
         stat_text TEXT,
         tier INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_liquid_emotions_pagename ON liquid_emotions (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_liquid_emotions_pageid ON liquid_emotions (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_liquid_emotionspageName ON liquid_emotions (pageName);
+    CREATE INDEX IF NOT EXISTS idx_liquid_emotionspageID ON liquid_emotions (pageID);
     CREATE INDEX IF NOT EXISTS idx_liquid_emotions_modifier ON liquid_emotions (modifier);
 `;
 
 export const MAP_FRAGMENTS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS map_fragments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         map_fragment_limit INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_map_fragments_pagename ON map_fragments (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_map_fragments_pageid ON map_fragments (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_map_fragmentspageName ON map_fragments (pageName);
+    CREATE INDEX IF NOT EXISTS idx_map_fragmentspageID ON map_fragments (pageID);
 `;
 
 export const JEWELS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS jewels (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         jewel_limit TEXT,
         radius_html TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_jewels_pagename ON jewels (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_jewels_pageid ON jewels (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_jewelspageName ON jewels (pageName);
+    CREATE INDEX IF NOT EXISTS idx_jewelspageID ON jewels (pageID);
 `;
 
 export const INHERENT_SKILLS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS inherent_skills (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         inherent_skills_ids TEXT,
         inherent_skills_text TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_inherent_skills_pagename ON inherent_skills (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_inherent_skills_pageid ON inherent_skills (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_inherent_skillspageName ON inherent_skills (pageName);
+    CREATE INDEX IF NOT EXISTS idx_inherent_skillspageID ON inherent_skills (pageID);
 `;
 
 export const AREAS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS areas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         act INTEGER,
         adjacent_biomes TEXT,
         area_level INTEGER,
@@ -1177,8 +1179,8 @@ export const AREAS_SCHEMA = `
         vaal_area_spawn_chance INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_areas_pagename ON areas (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_areas_pageid ON areas (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_areaspageName ON areas (pageName);
+    CREATE INDEX IF NOT EXISTS idx_areaspageID ON areas (pageID);
     CREATE INDEX IF NOT EXISTS idx_areas_cargo_id ON areas (cargo_id);
     CREATE INDEX IF NOT EXISTS idx_areas_name ON areas (name);
     CREATE INDEX IF NOT EXISTS idx_areas_parent_area_id ON areas (parent_area_id);
@@ -1187,37 +1189,38 @@ export const AREAS_SCHEMA = `
 export const GUIDES_SCHEMA = `
     CREATE TABLE IF NOT EXISTS guides (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         date TEXT,
         subject TEXT,
-        version TEXT
+        version TEXT,
+        date__precision
     );
 
-    CREATE INDEX IF NOT EXISTS idx_guides_pagename ON guides (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_guides_pageid ON guides (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_guidespageName ON guides (pageName);
+    CREATE INDEX IF NOT EXISTS idx_guidespageID ON guides (pageID);
     CREATE INDEX IF NOT EXISTS idx_guides_version ON guides (version);
 `;
 
 export const PASSIVE_SKILL_STATS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS passive_skill_stats (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         cargo_id TEXT,
         value INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_passive_skill_stats_pagename ON passive_skill_stats (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_passive_skill_stats_pageid ON passive_skill_stats (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_passive_skill_statspageName ON passive_skill_stats (pageName);
+    CREATE INDEX IF NOT EXISTS idx_passive_skill_statspageID ON passive_skill_stats (pageID);
     CREATE INDEX IF NOT EXISTS idx_passive_skill_stats_cargo_id ON passive_skill_stats (cargo_id);
 `;
 
 export const AUGMENTS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS augments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         augment_limit TEXT,
         stat_text TEXT,
         stat_text_bonded TEXT,
@@ -1225,8 +1228,8 @@ export const AUGMENTS_SCHEMA = `
         type_name TEXT
     );
 
-    CREATE INDEX IF NOT EXISTS idx_augments_pagename ON augments (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_augments_pageid ON augments (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_augmentspageName ON augments (pageName);
+    CREATE INDEX IF NOT EXISTS idx_augmentspageID ON augments (pageID);
     CREATE INDEX IF NOT EXISTS idx_augments_type_id ON augments (type_id);
     CREATE INDEX IF NOT EXISTS idx_augments_type_name ON augments (type_name);
 `;
@@ -1234,8 +1237,8 @@ export const AUGMENTS_SCHEMA = `
 export const PASSIVE_SKILLS_SCHEMA = `
     CREATE TABLE IF NOT EXISTS passive_skills (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        _pageName TEXT,
-        _pageID INTEGER,
+        pageName TEXT,
+        pageID INTEGER,
         ascendancy_class TEXT,
         atlas_sub_tree TEXT,
         buff_id TEXT,
@@ -1265,8 +1268,8 @@ export const PASSIVE_SKILLS_SCHEMA = `
         weapon_set_points INTEGER
     );
 
-    CREATE INDEX IF NOT EXISTS idx_passive_skills_pagename ON passive_skills (_pageName);
-    CREATE INDEX IF NOT EXISTS idx_passive_skills_pageid ON passive_skills (_pageID);
+    CREATE INDEX IF NOT EXISTS idx_passive_skillspageName ON passive_skills (pageName);
+    CREATE INDEX IF NOT EXISTS idx_passive_skillspageID ON passive_skills (pageID);
     CREATE INDEX IF NOT EXISTS idx_passive_skills_cargo_id ON passive_skills (cargo_id);
     CREATE INDEX IF NOT EXISTS idx_passive_skills_int_id ON passive_skills (int_id);
     CREATE INDEX IF NOT EXISTS idx_passive_skills_name ON passive_skills (name);
