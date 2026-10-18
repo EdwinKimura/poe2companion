@@ -16,7 +16,7 @@ export default function ItemCard({
       style={styles.itemCard}
     >
       <View style={styles.itemImagePlaceholder}>
-        <WikiImage fileName={item.itemImage} size={80} />
+        <WikiImage fileName={item.image} size={80} />
       </View>
 
       <View style={styles.itemInfo}>

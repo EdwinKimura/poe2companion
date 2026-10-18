@@ -16,9 +16,9 @@ import type {
 const RARITIES: RarityFilter[] = [
   'Todos',
   'Normal',
-  'Mágico',
-  'Raro',
-  'Único',
+  'Magic',
+  'Rare',
+  'Unique',
 ];
 
 export default function ItemsToolbar({

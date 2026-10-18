@@ -1,6 +1,6 @@
 
 import type { SQLiteDatabase } from 'expo-sqlite';
-import { saveDataset, getDatasetCount } from './DataRepository';
+import { getDatasetCount, saveDataset } from './DataRepository';
 
 type CargoItem = Record<string, unknown>;
 
@@ -83,4 +83,32 @@ export async function getItemById(database: SQLiteDatabase,id: number): Promise<
         WHERE id = ?`,
         id,
     );
+}
+
+export async function getItemsByCategory(database: SQLiteDatabase, category: string): Promise<ItemSearchResult[]> {
+
+    let query = `
+        SELECT
+            *
+        FROM items
+        WHERE 1=1
+    `;
+
+    let params: any[] = [];
+
+    if(category && category !== 'all'){
+        query += ` AND class = ?`;
+        params.push(category);
+    }
+
+    query += ` 
+        ORDER BY
+            RTRIM(class, '0123456789 ') ASC,
+            CAST(SUBSTR(class, LENGTH(RTRIM(class, '0123456789 ')) + 1) AS INTEGER) ASC;
+    `;
+
+    return database.getAllAsync<ItemSearchResult>(
+        query,
+        params
+    )
 }

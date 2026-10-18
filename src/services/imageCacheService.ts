@@ -1,5 +1,5 @@
 // src/services/imageCacheService.ts
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 
 const WIKI_FILE_URL = 'https://www.poe2wiki.net/wiki/Special:FilePath/';
 

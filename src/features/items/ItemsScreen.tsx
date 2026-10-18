@@ -1,6 +1,6 @@
 
 import { useRouter } from 'expo-router';
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -20,6 +20,8 @@ import ItemsFilterPanel from './components/ItemsFilterPanel';
 import ItemsToolbar from './components/ItemsToolbar';
 import ItemSubcategoryList from './components/ItemSubcategoryList';
 
+import { getDatabase } from '@/database/database';
+import { getItemsByCategory } from '@/database/repositories/ItemsRepository';
 
 import type {
   Item,
@@ -85,6 +87,32 @@ export default function ItemsScreen() {
   const [appliedMinLevel, setAppliedMinLevel] = useState('');
   const [appliedMaxLevel, setAppliedMaxLevel] = useState('');
 
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [items, setItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function loadFilteredItems() {
+      setLoading(true);
+      try {
+
+        const database = await getDatabase();
+
+        const data = await getItemsByCategory(
+          database,
+          selectedCategory
+        );
+        setItems(data);
+      } catch (error) {
+        console.error('Erro ao carregar itens filtrados:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadFilteredItems();
+  }, [selectedCategory]);
+
   function selectCategory(item: ItemCategory) {
     setCategory(item);
     setSubcategory(null);
@@ -94,6 +122,7 @@ export default function ItemsScreen() {
   }
 
   function selectSubcategory(item: ItemSubcategory) {
+    setSelectedCategory(item.id)
     setSubcategory(item);
     setSearch('');
     setRarity('Todos');
@@ -125,18 +154,8 @@ export default function ItemsScreen() {
   }
 
   const filteredItems = useMemo(() => {
-    return MOCK_ITEMS.filter(item => {
-      if (subcategory && item.subcategoryId !== subcategory.id) {
-        return false;
-      }
-
-      if (
-        category &&
-        !subcategory &&
-        !category.subcategories.some(
-          sub => sub.id === item.subcategoryId,
-        )
-      ) {
+    return items.filter(item => {
+      if (subcategory && item.class !== subcategory.id) {
         return false;
       }
 
