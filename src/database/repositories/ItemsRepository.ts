@@ -85,11 +85,19 @@ export async function getItemById(database: SQLiteDatabase,id: number): Promise<
     );
 }
 
-export async function getItemsByCategory(database: SQLiteDatabase, category: string): Promise<ItemSearchResult[]> {
+export async function getItemsByCategory(
+    database: SQLiteDatabase, 
+    category: string,
+    limit = 20, 
+    offset = 0,
+    searchQuery = ''
+): Promise<ItemSearchResult[]> {
+
+    const searchTerm = `%${searchQuery.trim().toLowerCase()}%`;
 
     let query = `
         SELECT
-            *
+            items.*
         FROM items
         WHERE 1=1
     `;
@@ -101,14 +109,32 @@ export async function getItemsByCategory(database: SQLiteDatabase, category: str
         params.push(category);
     }
 
+    if(searchTerm && searchTerm.length > 0){
+        query += ` AND (LOWER(name) LIKE ? OR ? = '')`;
+        params.push(searchTerm, searchQuery);
+    }
+
     query += ` 
         ORDER BY
             RTRIM(class, '0123456789 ') ASC,
-            CAST(SUBSTR(class, LENGTH(RTRIM(class, '0123456789 ')) + 1) AS INTEGER) ASC;
+            CAST(SUBSTR(class, LENGTH(RTRIM(class, '0123456789 ')) + 1) AS INTEGER) ASC
+            LIMIT ? OFFSET ?;
+    `;
+
+    params.push(limit, offset);
+
+    return database.getAllAsync<ItemSearchResult>(query, params);
+}
+
+export async function getImagePath(database: SQLiteDatabase): Promise<ItemSearchResult[]> {
+
+    let query = `
+        SELECT DISTINCT
+            inventory_icon
+        FROM items
     `;
 
     return database.getAllAsync<ItemSearchResult>(
-        query,
-        params
+        query
     )
 }

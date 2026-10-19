@@ -9,16 +9,16 @@ import {
 
 import { COLORS, styles } from '../Items.styles';
 import type {
+  ItemRarity,
   ItemsToolbarProps,
-  RarityFilter,
 } from '../types/Items.types';
 
-const RARITIES: RarityFilter[] = [
-  'Todos',
-  'Normal',
-  'Magic',
-  'Rare',
-  'Unique',
+const RARITIES: ItemRarity[] = [
+  {id: 'All', label: 'Todos'},
+  // {id: 'Normal', label: 'Normal'},
+  // {id: 'Magic', label: 'Mágico'},
+  // {id: 'Rare', label: 'Raro'},
+  {id: 'Unique', label: 'Único'}
 ];
 
 export default function ItemsToolbar({
@@ -57,11 +57,11 @@ export default function ItemsToolbar({
         contentContainerStyle={styles.chipRow}
       >
         {RARITIES.map(option => {
-          const selected = rarity === option;
+          const selected = rarity.id === option.id;
 
           return (
             <Pressable
-              key={option}
+              key={option.id}
               onPress={() => onRarityChange(option)}
               style={[
                 styles.chip,
@@ -74,7 +74,7 @@ export default function ItemsToolbar({
                   selected && styles.chipTextSelected,
                 ]}
               >
-                {option}
+                {option.label}
               </Text>
             </Pressable>
           );

@@ -7,6 +7,12 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 
 export type DatabaseRow = Record<string, unknown>;
 
+type TableProgressInfo = {
+    tableName: string;
+    status: string;
+    saved: number;
+};
+
 
 /**
  * Salva um lote em uma transação exclusiva. Se o SQLite estiver temporariamente
@@ -98,4 +104,38 @@ export async function getDatasetCount(
     );
 
     return result?.total ?? 0;
+}
+
+export async function getAllDatabaseTables(
+    database: SQLiteDatabase
+): Promise<TableProgressInfo[]> {
+  try {
+    // Consulta a tabela de sistema do SQLite para pegar todas as tabelas criadas
+    const query = `
+      SELECT name 
+      FROM sqlite_master 
+      WHERE type = 'table' 
+        AND name NOT LIKE 'sqlite_%' 
+        AND name NOT LIKE 'android_%';
+    `;
+
+    let queryCount = `
+      SELECT 
+        COUNT(*) as total
+      FROM ?;
+    `;
+
+    const tables = await database.getAllAsync(query) as { name: string }[];
+    const data = [];
+
+    for(const table of tables){
+        let result = await database.getFirstAsync(queryCount, table.name) as number;
+        data.push({'tableName': table.name, status: 'pending', 'saved': result});
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Erro ao buscar tabelas do banco:', error);
+    return [];
+  }
 }

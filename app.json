@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "poe2-companion",
+    "name": "Path of Exile 2 Companion",
     "slug": "poe2-companion",
-    "version": "1.7.0",
+    "version": "1.11.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "poe2companion",
@@ -29,8 +29,8 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
+          "backgroundColor": "#000",
+          "image": "./assets/images/icon.png",
           "imageWidth": 76
         }
       ],

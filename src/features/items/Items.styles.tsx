@@ -116,7 +116,7 @@ export const styles = StyleSheet.create({
   },
   breadcrumbContainer: { 
     flexDirection: 'row',
-    paddingHorizontal: 8, 
+    paddingHorizontal: 16, 
     paddingTop: 10
   },
   sectionTitle: {

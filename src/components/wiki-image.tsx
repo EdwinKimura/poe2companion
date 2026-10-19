@@ -1,75 +1,60 @@
-// src/components/wiki-image.tsx
 import { getCachedImageUri } from '@/services/imageCacheService';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 interface WikiImageProps {
-    fileName: unknown;
-    size?: number;
+  fileName?: string | null;
+  size?: number;
 }
 
-export default function WikiImage({
-    fileName,
-    size = 100,
-}: WikiImageProps) {
-    const [imageUri, setImageUri] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+export default function WikiImage({ fileName, size = 60 }: WikiImageProps) {
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(Boolean(fileName));
 
-    if (typeof fileName !== 'string' || !fileName.trim()) {
-        return null;
+  useEffect(() => {
+    let cancelled = false;
+    setImageUri(null);
+
+    if (!fileName?.trim()) {
+      setIsLoading(false);
+      return () => { cancelled = true; };
     }
 
-    useEffect(() => {
-        let isMounted = true;
-
-        async function resolveImage() {
-            try {
-                setIsLoading(true);
-                const uri = await getCachedImageUri(fileName as string);
-                if (isMounted) {
-                    setImageUri(uri);
-                }
-            } catch (error) {
-                console.warn('[WikiImage] Erro ao resolver imagem:', error);
-            } finally {
-                if (isMounted) {
-                    setIsLoading(false);
-                }
-            }
+    setIsLoading(true);
+    getCachedImageUri(fileName)
+      .then((uri) => {
+        if (!cancelled) setImageUri(uri || null);
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          setImageUri(null);
+          console.warn('[WikiImage] Falha ao carregar imagem.', error);
         }
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
 
-        void resolveImage();
+    return () => { cancelled = true; };
+  }, [fileName]);
 
-        return () => {
-            isMounted = false;
-        };
-    }, [fileName]);
-
-    return (
-        <View style={[styles.container, { width: size, height: size }]}>
-            {isLoading && !imageUri ? (
-                <ActivityIndicator size="small" color="#888" />
-            ) : (
-                <Image
-                    source={{ uri: imageUri || '' }}
-                    style={{ width: size, height: size }}
-                    resizeMode="contain"
-                    onError={(error) => {
-                        console.warn(
-                            '[WikiImage] Erro ao renderizar:',
-                            fileName,
-                            error.nativeEvent.error,
-                        );
-                    }}
-                />
-            )}
-        </View>
-    );
+  return (
+    <View style={[{ width: size, height: size }, styles.container]}>
+      {imageUri ? (
+        <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} contentFit="contain" cachePolicy="memory-disk" transition={0} />
+      ) : null}
+      {isLoading ? (
+        <View style={styles.loaderContainer}><ActivityIndicator size="small" color="#888" /></View>
+      ) : !imageUri ? (
+        <View style={styles.placeholder} />
+      ) : null}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-})
+  container: { justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },
+  loaderContainer: { ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center' },
+  placeholder: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(128, 128, 128, 0.08)' },
+});

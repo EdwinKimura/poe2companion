@@ -3,7 +3,15 @@ import { Pressable, Text, View } from 'react-native';
 
 import WikiImage from '@/components/wiki-image';
 import { styles } from '../Items.styles';
-import type { ItemCardProps } from '../types/Items.types';
+import type { ItemCardProps, ItemRarity } from '../types/Items.types';
+
+const RARITIES: ItemRarity[] = [
+  {id: 'All', label: 'Todos'},
+  {id: 'Normal', label: 'Normal'},
+  {id: 'Magic', label: 'Mágico'},
+  {id: 'Rare', label: 'Raro'},
+  {id: 'Unique', label: 'Único'}
+];
 
 export default function ItemCard({
   item,
@@ -16,7 +24,7 @@ export default function ItemCard({
       style={styles.itemCard}
     >
       <View style={styles.itemImagePlaceholder}>
-        <WikiImage fileName={item.image} size={80} />
+        <WikiImage fileName={item.inventory_icon} size={80} />
       </View>
 
       <View style={styles.itemInfo}>
@@ -25,7 +33,9 @@ export default function ItemCard({
         </Text>
 
         <Text style={styles.itemBase}>
-          {item.base}
+          {
+            RARITIES[RARITIES.findIndex((rarity) => rarity.id === item.rarity)].label
+          }
         </Text>
 
         <Text style={styles.itemMeta}>

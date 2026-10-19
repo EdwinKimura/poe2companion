@@ -13,7 +13,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ITEM_CATEGORIES } from './data/itemCategories';
 import { COLORS, styles } from './Items.styles';
 
-import { ItemBreadcrumb } from './components/ItemBreadcrumb';
 import ItemCategoryBar from './components/ItemCategoryBar';
 import ItemList from './components/ItemList';
 import ItemsFilterPanel from './components/ItemsFilterPanel';
@@ -22,6 +21,8 @@ import ItemSubcategoryList from './components/ItemSubcategoryList';
 
 import { getDatabase } from '@/database/database';
 import { getItemsByCategory } from '@/database/repositories/ItemsRepository';
+
+import { clearImageCacheQueue } from '@/services/imageCacheService';
 
 import type {
   Item,
@@ -79,17 +80,35 @@ export default function ItemsScreen() {
     useState<ItemSubcategory | null>(null);
 
   const [search, setSearch] = useState('');
-  const [rarity, setRarity] = useState<RarityFilter>('Todos');
+  const [rarity, setRarity] = useState<RarityFilter>({id: 'All', label: 'Todos'});
   const [showFilters, setShowFilters] = useState(false);
 
   const [minLevel, setMinLevel] = useState('');
   const [maxLevel, setMaxLevel] = useState('');
   const [appliedMinLevel, setAppliedMinLevel] = useState('');
   const [appliedMaxLevel, setAppliedMaxLevel] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [offset, setOffset] = useState<number>(0);
+  const LIMIT = 20;
+
+  useEffect(() => {
+    return () => {
+      clearImageCacheQueue();
+    };
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      clearImageCacheQueue();
+      setDebouncedSearch(search);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [search]);
 
   useEffect(() => {
     async function loadFilteredItems() {
@@ -100,9 +119,13 @@ export default function ItemsScreen() {
 
         const data = await getItemsByCategory(
           database,
-          selectedCategory
+          selectedCategory,
+          LIMIT,
+          0,
+          debouncedSearch
         );
         setItems(data);
+        setOffset(LIMIT);
       } catch (error) {
         console.error('Erro ao carregar itens filtrados:', error);
       } finally {
@@ -110,36 +133,67 @@ export default function ItemsScreen() {
       }
     }
 
-    loadFilteredItems();
-  }, [selectedCategory]);
+    if (subcategory) {
+      loadFilteredItems();
+    }
+  }, [selectedCategory, debouncedSearch, subcategory]);
+
+  const loadMoreItems = async () => {
+    if (loading) return;
+    try {
+      const database = await getDatabase();
+      const moreData = await getItemsByCategory(
+        database,
+        selectedCategory,
+        LIMIT,
+        offset,
+        debouncedSearch
+      );
+      if (moreData.length > 0) {
+        setItems(prev => [...prev, ...moreData]);
+        setOffset(prev => prev + LIMIT);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar mais itens:', error);
+    }
+  };
 
   function selectCategory(item: ItemCategory) {
+    clearImageCacheQueue();
     setCategory(item);
     setSubcategory(null);
     setSearch('');
-    setRarity('Todos');
+    setRarity({id: 'All', label: 'Todos'});
     setShowFilters(false);
+    setOffset(0);
+    setItems([]);
   }
 
   function selectSubcategory(item: ItemSubcategory) {
+    clearImageCacheQueue();
     setSelectedCategory(item.id)
     setSubcategory(item);
     setSearch('');
-    setRarity('Todos');
+    setRarity({id: 'All', label: 'Todos'});
     setShowFilters(false);
     setMinLevel('');
     setMaxLevel('');
     setAppliedMinLevel('');
     setAppliedMaxLevel('');
+    setItems([]);
+    setOffset(0);
   }
 
   function goBack() {
     if (subcategory) {
       setSubcategory(null);
       setShowFilters(false);
+      clearImageCacheQueue();
     } else if (category) {
       setCategory(null);
+      clearImageCacheQueue();
     } else {
+      clearImageCacheQueue();
       router.back();
     }
   }
@@ -150,23 +204,12 @@ export default function ItemsScreen() {
     setAppliedMinLevel('');
     setAppliedMaxLevel('');
     setSearch('');
-    setRarity('Todos');
+    setRarity({id: 'All', label: 'Todos'});
   }
 
   const filteredItems = useMemo(() => {
     return items.filter(item => {
-      if (subcategory && item.class !== subcategory.id) {
-        return false;
-      }
-
-      if (
-        search.trim() &&
-        !item.name?.toLowerCase().includes(search.trim().toLowerCase())
-      ) {
-        return false;
-      }
-
-      if (rarity !== 'Todos' && item.rarity !== rarity) {
+      if (rarity.id !== 'All' && item.rarity !== rarity.id) {
         return false;
       }
 
@@ -187,9 +230,7 @@ export default function ItemsScreen() {
       return true;
     });
   }, [
-    category,
-    subcategory,
-    search,
+    items,
     rarity,
     appliedMinLevel,
     appliedMaxLevel,
@@ -271,13 +312,7 @@ export default function ItemsScreen() {
         <Fragment>
           <View style={styles.content}>
             <View style={styles.breadcrumbContainer}>
-              <ItemBreadcrumb
-                category={category.label}
-                starting={true}
-              />
-              <ItemBreadcrumb
-                category={subcategory.label}
-              />
+              <Text style={styles.categoryLabel}>{category.label} {'>'} {subcategory.label}</Text>
             </View>
 
             <ItemsToolbar
@@ -307,6 +342,7 @@ export default function ItemsScreen() {
 
             <ItemList
               items={filteredItems}
+              onLoadMore={loadMoreItems}
               onItemPress={item => {
                 router.push({
                   pathname: '/item/[id]',
