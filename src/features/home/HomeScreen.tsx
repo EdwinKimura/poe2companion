@@ -97,7 +97,7 @@ export default function HomeScreen() {
 
                     const result = await syncAllData({
                         force: true, onDatasetProgress: (dataset, saved, totalFetched) => {
-                            setDatabaseStatus(`${dataset}: ${saved.toLocaleString('pt-BR')}`);
+                            setDatabaseStatus(`${dataset.replace('_', ' ')}: ${saved.toLocaleString('pt-BR')}`);
                         }
                     });
 
