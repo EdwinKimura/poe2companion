@@ -11,20 +11,23 @@ export interface ItemCategory {
     subcategories: ItemSubcategory[];
 }
 
-export type ItemRarity = 'Normal' | 'Magic' | 'Rare' | 'Unique';
+export interface ItemRarity {
+    id: string;
+    label: string;
+}
 
 export interface Item {
     id: string | number;
     name: string;
     base: string;
-    rarity: ItemRarity;
+    rarity: string;
     category: string;
     subcategoryId: string;
     required_level: number;
-    image?: string | null;
+    inventory_icon?: string | null;
 }
 
-export type RarityFilter = 'Todos' | ItemRarity;
+export type RarityFilter = ItemRarity;
 
 export interface ItemCategoryBarProps {
     categories: ItemCategory[];
@@ -61,5 +64,6 @@ export interface ItemCardProps {
 
 export interface ItemListProps {
     items: Item[];
+    onLoadMore: any;
     onItemPress: (item: Item) => void;
 }

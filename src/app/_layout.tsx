@@ -55,23 +55,6 @@ export default function TabLayout() {
   })
 
   useEffect(() => {
-    async function initializeItems() {
-      try {
-        await getDatabase();
-
-        const result = await syncAllData();
-        
-        console.log('[Sync] Inicialização concluída:', result);
-
-      } catch (error) {
-        console.error('[Sync] Erro na sincronização inicial:', error);
-      }
-    }
-
-    void initializeItems();
-  }, []);
-
-  useEffect(() => {
     if (fontLoaded || fontError) {
       SplashScreen.hideAsync();
     }

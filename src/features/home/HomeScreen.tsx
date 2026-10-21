@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     Image,
+    Linking,
     Pressable,
     ScrollView,
     StatusBar,
@@ -16,7 +17,7 @@ import { Fonts, SVGColors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { styles } from './home.styles';
 
-import { getAppVersion } from '../../database/database';
+import { getAppVersion, getDatabase } from '../../database/database';
 
 import { syncAllData } from '../../services/sync/syncAllData';
 import { isSyncInProgress, subscribeSyncStatus } from '../../services/sync/syncData';
@@ -27,6 +28,9 @@ import Diamond from '@/assets/icons/diamond-duotone.svg';
 import DoubleSwordIcon from '@/assets/icons/double-sword.svg';
 import Dwarf from '@/assets/icons/dwarf.svg';
 import { useRouter } from 'expo-router';
+
+import { getAllDatabaseTables } from '@/database/repositories/DataRepository';
+import { getVersions, VersionSearchResult } from '@/database/repositories/VersionRepository';
 
 const FEATURES = [
     {
@@ -61,18 +65,61 @@ const FEATURES = [
     },
 ];
 
+type TableProgressInfo = {
+    tableName: string;
+    status: string;
+    saved: number;
+};
+
 export default function HomeScreen() {
     const router = useRouter();
     const theme = useTheme();
     const fonts = Fonts;
+    const url = 'https://www.poe2wiki.net/wiki/';
 
     const [version, setVersion] = useState('0.0.0');
     const [databaseStatus, setDatabaseStatus] = useState('Verificando...');
     const [isSyncing, setIsSyncing] = useState(isSyncInProgress());
-
+    const [releaseVersion, setReleaseVersion] = useState<VersionSearchResult>(null);
+    const [tableProgressList, setTableProgressList] = useState<TableProgressInfo[]>([]);
 
     useEffect(() => {
         return subscribeSyncStatus(setIsSyncing);
+    }, []);
+
+    useEffect(() => {
+        async function initializeItems() {
+            try {
+                const database = await getDatabase();
+                setDatabaseStatus('Conectando à Wiki...');
+
+                try {
+
+                    const result = await syncAllData({
+                        force: true, onDatasetProgress: (dataset, saved, totalFetched) => {
+                            setDatabaseStatus(`${dataset.replace('_', ' ')}: ${saved.toLocaleString('pt-BR')}`);
+                        }
+                    });
+
+                    console.log('[Sync] Tabelas sincronizadas:', result.synchronized);
+
+                } catch (error) {
+
+                    console.error('[Sync] Erro:', error);
+                    setDatabaseStatus('Falha na sincronização');
+
+                } finally {
+
+                    setIsSyncing(false);
+
+                }
+
+            } catch (error) {
+                console.error('[Sync] Erro na sincronização inicial:', error);
+            }
+        }
+
+        void initializeItems();
     }, []);
 
     useEffect(() => {
@@ -86,15 +133,46 @@ export default function HomeScreen() {
         void loadDatabaseStatus();
     }, []);
 
+    useEffect(() => {
+        async function loadVersionPoe() {
+            const database = await getDatabase();
+            const poeVersion = await getVersions(database);
+            if (poeVersion) {
+                setReleaseVersion(poeVersion);
+            }
+        }
+
+        void loadVersionPoe();
+    }, []);
+
     async function handleSync() {
         if (isSyncInProgress()) return;
 
+        const database = await getDatabase();
+        const tables = await getAllDatabaseTables(database);
+
         setDatabaseStatus('Conectando à Wiki...');
+        setTableProgressList(tables);
 
         try {
-            const result = await syncAllData({ force: true, onDatasetProgress: (dataset, saved, totalFetched) => {
-                setDatabaseStatus(`${dataset}: ${saved.toLocaleString('pt-BR')} salvos / ${totalFetched.toLocaleString('pt-BR')} recebidos`);
-            }});
+            const result = await syncAllData({
+                force: true, onDatasetProgress: (dataset, saved, totalFetched) => {
+                    setDatabaseStatus(`${dataset}: ${saved.toLocaleString('pt-BR')}`);
+                    setTableProgressList(prev =>
+                        prev.map(item => {
+                            if (item.tableName === dataset) {
+                                return {
+                                    ...item,
+                                    status: saved >= totalFetched && totalFetched > 0 ? 'completed' : 'syncing',
+                                    saved,
+                                    total: totalFetched
+                                };
+                            }
+                            return item;
+                        })
+                    )
+                }
+            });
 
             console.log('[Sync] Tabelas sincronizadas:', result.synchronized);
         } catch (error) {
@@ -102,6 +180,20 @@ export default function HomeScreen() {
             setDatabaseStatus('Falha na sincronização');
         } finally {
             setIsSyncing(false);
+        }
+    }
+
+    async function handleOpenRelease() {
+        const targetUrl = url + releaseVersion.pageName;
+        try {
+            const supported = await Linking.canOpenURL(targetUrl);
+            if (supported) {
+                await Linking.openURL(targetUrl);
+            } else {
+                console.error(`Não foi possível abrir a URL: ${targetUrl}`);
+            }
+        } catch (error) {
+            console.error('Erro ao tentar abrir o link:', error);
         }
     }
 
@@ -177,9 +269,9 @@ export default function HomeScreen() {
                                 </Text>
 
                                 <View style={[styles.releaseButton, { backgroundColor: theme.background, borderColor: theme.border }]}>
-                                    <Pressable>
+                                    <Pressable onPress={handleOpenRelease}>
                                         <Text style={[styles.releaseText, { color: theme.gold }]}>
-                                            {'Ver Liga e Releases ->'}
+                                            {'Release ' + releaseVersion?.version}
                                         </Text>
                                     </Pressable>
                                 </View>
@@ -213,14 +305,24 @@ export default function HomeScreen() {
                                     accessibilityLabel="Sincronizando dados"
                                 >
                                     <ActivityIndicator size="small" color={theme.gold} />
-                                    <Text
-                                        style={[
-                                            styles.syncLoadingText,
-                                            { color: theme.text, fontFamily: fonts.inter.regular },
-                                        ]}
-                                    >
-                                        Sincronizando dados, aguarde...
-                                    </Text>
+                                    <View>
+                                        <Text
+                                            style={[
+                                                styles.syncLoadingText,
+                                                { color: theme.text, fontFamily: fonts.inter.regular, marginLeft: 8, fontWeight: 'bold' },
+                                            ]}
+                                        >
+                                            Sincronizando banco de dados...
+                                        </Text>
+                                        <Text
+                                            style={[
+                                                styles.syncLoadingText,
+                                                { color: theme.text, fontFamily: fonts.inter.regular, marginLeft: 8, fontWeight: 'bold' },
+                                            ]}
+                                        >
+                                            {databaseStatus}
+                                        </Text>
+                                    </View>
                                 </View>
                             ) : (
                                 FEATURES.map((feature) => (
@@ -270,9 +372,9 @@ export default function HomeScreen() {
                             <Text style={[styles.databaseIcon, { color: theme.gold }]}>▤</Text>  Banco de dados local
                         </Text>
                         <View style={styles.dataBaseInfo}>
-                            <View style={[styles.pendingDot, { backgroundColor: theme.gold }]} />
+                            <View style={[styles.pendingDot, isSyncing ? { backgroundColor: theme.gold } : { backgroundColor: theme.green }]} />
                             <Text style={[styles.databaseStatusText, { color: theme.muted }]}>
-                                {databaseStatus}
+                                {isSyncing ? 'SINCRONIZANDO...' : 'SINCRONIZAR'}
                             </Text>
                         </View>
                     </View>

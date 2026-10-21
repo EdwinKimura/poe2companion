@@ -7,12 +7,16 @@ import ItemCard from './ItemCard';
 
 export default function ItemList({
   items,
+  onLoadMore,
   onItemPress,
 }: ItemListProps) {
   return (
     <FlatList
       data={items}
-      keyExtractor={item => String(item.id)}
+      keyExtractor={(item, index) => {
+        const uniqueId = item.id ? item.id.toString() : 'item';
+        return `${uniqueId}-${index}`;
+      }}
       renderItem={({ item }) => (
         <ItemCard
           item={item}
@@ -26,6 +30,13 @@ export default function ItemList({
           Nenhum item encontrado.
         </Text>
       }
+      
+      initialNumToRender={10}
+      maxToRenderPerBatch={5}
+      onEndReached={onLoadMore}
+      onEndReachedThreshold={0.5}
+      windowSize={5}
+      removeClippedSubviews={true}
     />
   );
 }

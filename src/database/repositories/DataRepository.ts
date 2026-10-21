@@ -7,6 +7,12 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 
 export type DatabaseRow = Record<string, unknown>;
 
+type TableProgressInfo = {
+    tableName: string;
+    status: string;
+    saved: number;
+};
+
 
 /**
  * Salva um lote em uma transação exclusiva. Se o SQLite estiver temporariamente
