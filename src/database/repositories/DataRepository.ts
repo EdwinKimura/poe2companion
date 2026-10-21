@@ -99,3 +99,25 @@ export async function getDatasetCount(
 
     return result?.total ?? 0;
 }
+
+export async function getAllDatabaseTables(
+    database: SQLiteDatabase
+): Promise<string[]> {
+  try {
+    
+    const query = `
+      SELECT name 
+      FROM sqlite_master 
+      WHERE type = 'table' 
+        AND name NOT LIKE 'sqlite_%' 
+        AND name NOT LIKE 'android_%';
+    `;
+
+    const result = await database.getAllAsync(query) as { name: string }[];
+    
+    return result.map(row => row.name);
+  } catch (error) {
+    console.error('Erro ao buscar tabelas do banco:', error);
+    return [];
+  }
+}

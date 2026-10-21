@@ -29,7 +29,7 @@ import { useFonts } from 'expo-font';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import AppTabs from '@/components/app-tabs';
 
-import { getDatabase, logDatabaseTables } from '../database/database';
+import { getDatabase } from '../database/database';
 import { syncAllData } from '../services/sync/syncAllData';
 
 SplashScreen.preventAutoHideAsync();
