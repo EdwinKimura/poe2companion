@@ -2,7 +2,7 @@
   "expo": {
     "name": "Path of Exile 2 Companion",
     "slug": "poe2-companion",
-    "version": "1.11.0",
+    "version": "1.12.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "poe2companion",
@@ -34,7 +34,8 @@
         }
       ],
       "expo-sqlite",
-      "expo-font"
+      "expo-font",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -45,6 +46,9 @@
       "eas": {
         "projectId": "bd3ca239-92e9-4537-a272-b82c7f6863a0"
       }
-    }
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ]
   }
 }

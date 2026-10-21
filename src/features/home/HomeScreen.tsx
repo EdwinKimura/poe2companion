@@ -19,7 +19,7 @@ import { styles } from './home.styles';
 
 import { getAppVersion, getDatabase } from '../../database/database';
 
-import { syncAllData } from '../../services/sync/syncAllData';
+import { importLocalData } from '../../services/sync/importLocalData';
 import { isSyncInProgress, subscribeSyncStatus } from '../../services/sync/syncData';
 
 import Anvil from '@/assets/icons/anvil.svg';
@@ -69,6 +69,7 @@ type TableProgressInfo = {
     tableName: string;
     status: string;
     saved: number;
+    total: number;
 };
 
 export default function HomeScreen() {
@@ -88,38 +89,7 @@ export default function HomeScreen() {
     }, []);
 
     useEffect(() => {
-        async function initializeItems() {
-            try {
-                const database = await getDatabase();
-                setDatabaseStatus('Conectando à Wiki...');
-
-                try {
-
-                    const result = await syncAllData({
-                        force: true, onDatasetProgress: (dataset, saved, totalFetched) => {
-                            setDatabaseStatus(`${dataset.replace('_', ' ')}: ${saved.toLocaleString('pt-BR')}`);
-                        }
-                    });
-
-                    console.log('[Sync] Tabelas sincronizadas:', result.synchronized);
-
-                } catch (error) {
-
-                    console.error('[Sync] Erro:', error);
-                    setDatabaseStatus('Falha na sincronização');
-
-                } finally {
-
-                    setIsSyncing(false);
-
-                }
-
-            } catch (error) {
-                console.error('[Sync] Erro na sincronização inicial:', error);
-            }
-        }
-
-        void initializeItems();
+        void executeImport();
     }, []);
 
     useEffect(() => {
@@ -145,39 +115,48 @@ export default function HomeScreen() {
         void loadVersionPoe();
     }, []);
 
-    async function handleSync() {
+    async function executeImport() {
         if (isSyncInProgress()) return;
 
-        const database = await getDatabase();
-        const tables = await getAllDatabaseTables(database);
-
-        setDatabaseStatus('Conectando à Wiki...');
-        setTableProgressList(tables);
-
         try {
-            const result = await syncAllData({
-                force: true, onDatasetProgress: (dataset, saved, totalFetched) => {
-                    setDatabaseStatus(`${dataset}: ${saved.toLocaleString('pt-BR')}`);
+            const database = await getDatabase();
+            const tables = await getAllDatabaseTables(database);
+
+            // Inicializa a lista com as tabelas do banco e contagens atuais
+            const initialList: TableProgressInfo[] = tables.map(t => ({
+                tableName: t,
+                status: 'pending',
+                saved: 0,
+                total: 0
+            }));
+
+            setTableProgressList(initialList);
+            setDatabaseStatus('Importando dados locais...');
+
+            const result = await importLocalData({
+                onDatasetProgress: (dataset, saved, total) => {
+                    setDatabaseStatus(`${dataset.replace('_', ' ')}: ${saved}/${total}`);
                     setTableProgressList(prev =>
                         prev.map(item => {
                             if (item.tableName === dataset) {
                                 return {
                                     ...item,
-                                    status: saved >= totalFetched && totalFetched > 0 ? 'completed' : 'syncing',
+                                    status: saved >= total && total > 0 ? 'completed' : 'syncing',
                                     saved,
-                                    total: totalFetched
+                                    total
                                 };
                             }
                             return item;
                         })
-                    )
+                    );
                 }
             });
 
-            console.log('[Sync] Tabelas sincronizadas:', result.synchronized);
+            console.log('[Import] Tabelas importadas com sucesso:', result.synchronized);
+            setDatabaseStatus('Banco de dados atualizado!');
         } catch (error) {
-            console.error('[Sync] Erro:', error);
-            setDatabaseStatus('Falha na sincronização');
+            console.error('[Import] Erro na importação:', error);
+            setDatabaseStatus('Falha na importação dos dados');
         } finally {
             setIsSyncing(false);
         }
@@ -221,7 +200,7 @@ export default function HomeScreen() {
                     </View>
 
                     <Pressable
-                        onPress={handleSync}
+                        onPress={executeImport}
                         disabled={isSyncing}
                         style={({ pressed }) => [
                             styles.offlineBadge,
@@ -322,6 +301,32 @@ export default function HomeScreen() {
                                         >
                                             {databaseStatus}
                                         </Text>
+                                    </View>
+
+                                    <View style={{ width: '100%', gap: 8 }}>
+                                        {tableProgressList.map((table) => {
+                                            let iconSymbol = '⏳';
+                                            let textColor = theme.muted;
+
+                                            if (table.status === 'syncing') {
+                                                iconSymbol = '🔄';
+                                                textColor = theme.gold;
+                                            } else if (table.status === 'completed') {
+                                                iconSymbol = '✅';
+                                                textColor = theme.green;
+                                            }
+
+                                            return (
+                                                <View key={table.tableName} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <Text style={{ color: textColor, fontFamily: fonts.inter.regular, fontSize: 13 }}>
+                                                        {iconSymbol} {table.tableName.toUpperCase()}
+                                                    </Text>
+                                                    <Text style={{ color: theme.muted, fontFamily: fonts.inter.regular, fontSize: 12 }}>
+                                                        {table.total > 0 ? `${table.saved.toLocaleString('pt-BR')} / ${table.total.toLocaleString('pt-BR')}` : '0 / 0'}
+                                                    </Text>
+                                                </View>
+                                            );
+                                        })}
                                     </View>
                                 </View>
                             ) : (

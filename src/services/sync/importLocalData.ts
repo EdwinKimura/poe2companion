@@ -1,6 +1,6 @@
 import { getDatabase } from '@/database/database';
 import { getAllDatabaseTables } from '@/database/repositories/DataRepository';
-import { File, Paths } from 'expo-file-system';
+import { SEED_ASSETS } from '@/database/seeds';
 import { SQLiteDatabase } from 'expo-sqlite';
 
 // Exemplo simulado de importação de JSONs locais
@@ -12,30 +12,21 @@ export async function importLocalData(options?: {
     const synchronized: string[] = [];
 
     for (const table of tables) {
-        try {
-            let jsonData: Record<string, any>[] = [];
-
+        if (table !== 'sync_state' && table !== 'app_metadata') {
             try {
-                const seedFile = new File(Paths.document, `seed/${table}.json`);
+                let jsonData = SEED_ASSETS[table];
+                console.log(jsonData.length)
 
-                if (seedFile.exists) {
-                    const fileContent = await seedFile.text();
-                    jsonData = JSON.parse(fileContent);
-                } else {
-                    jsonData = require(`@/database/seed/${table}.json`);
-                }
-            } catch (readError) {
-                jsonData = require(`@/database/seed/${table}.json`);
+                // await insertJsonDataIntoTable(database, table, jsonData, (saved, totalCount) => {
+                //     options?.onDatasetProgress?.(table, saved, totalCount);
+                // });
+
+                // synchronized.push(table);
+            } catch (error) {
+                console.error(`[Import] Erro ao importar tabela ${table}:`, error);
             }
-
-            await insertJsonDataIntoTable(database, table, jsonData, (saved, totalCount) => {
-                options?.onDatasetProgress?.(table, saved, totalCount);
-            });
-
-            synchronized.push(table);
-        } catch (error) {
-            console.error(`[Import] Erro ao importar tabela ${table}:`, error);
         }
+
     }
 
     return { synchronized };
