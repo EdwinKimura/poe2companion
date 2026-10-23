@@ -1,3 +1,4 @@
+import RenderHTML from '@native-html/render';
 import * as he from 'he';
 import { useMemo } from 'react';
 import {
@@ -5,9 +6,8 @@ import {
     Text,
     useWindowDimensions,
 } from 'react-native';
-import RenderHTML from 'react-native-render-html';
 
-import { COLORS } from '../features/itemDetail/ItemDetail.styles';
+import { useTheme } from '@/hooks/use-theme';
 
 interface HtmlContentProps {
     value: unknown;
@@ -57,6 +57,7 @@ function wikiLinksToHtml(value: string): string {
 
 export default function HtmlContent({ value, styleText }: HtmlContentProps) {
     const { width } = useWindowDimensions();
+    const theme = useTheme();
 
     const content = useMemo(() => {
         if (value === null || value === undefined) {
@@ -80,7 +81,7 @@ export default function HtmlContent({ value, styleText }: HtmlContentProps) {
         return (
             <Text
                 style={{
-                    color: styleText?.color ? styleText?.color : COLORS.text,
+                    color: styleText?.color ? styleText?.color : theme.text,
                     fontSize: styleText?.fontSize ? styleText?.fontSize : 14,
                     lineHeight: 20,
                     fontWeight: styleText?.isBold ? '700' : 'normal',
@@ -105,60 +106,60 @@ export default function HtmlContent({ value, styleText }: HtmlContentProps) {
             }}
             tagsStyles={{
                 body: {
-                    color: styleText?.color ? styleText?.color : COLORS.text,
+                    color: styleText?.color ? styleText?.color : theme.text,
                     fontSize: styleText?.fontSize ? styleText?.fontSize : 14,
                     lineHeight: 20,
                     fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
                 },
                 p: {
-                    color: styleText?.color ? styleText?.color : COLORS.text,
+                    color: styleText?.color ? styleText?.color : theme.text,
                     marginTop: 0,
                     marginBottom: 8,
                     fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
                 },
                 span: {
-                    color: styleText?.color ? styleText?.color : COLORS.text,
+                    color: styleText?.color ? styleText?.color : theme.text,
                     fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
                 },
                 em: {
-                    color: styleText?.color ? styleText?.color : COLORS.gold,
+                    color: styleText?.color ? styleText?.color : theme.gold,
                     fontStyle: 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
                 },
                 strong: {
-                    color: styleText?.color ? styleText?.color : COLORS.text,
+                    color: styleText?.color ? styleText?.color : theme.text,
                     fontWeight: '700',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
                 },
                 a: {
-                    color: COLORS.gold,
+                    color: theme.gold,
                     textDecorationLine: 'underline',
                     fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
                 },
                 h1: {
-                    color: styleText?.color ? styleText?.color : COLORS.text,
+                    color: styleText?.color ? styleText?.color : theme.text,
                     fontSize: 20,
                     fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
                 },
                 h2: {
-                    color: styleText?.color ? styleText?.color : COLORS.text,
+                    color: styleText?.color ? styleText?.color : theme.text,
                     fontSize: 18,
                     fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
                 },
                 h3: {
-                    color: styleText?.color ? styleText?.color : COLORS.text,
+                    color: styleText?.color ? styleText?.color : theme.text,
                     fontSize: 16,
                     fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
                 },
                 li: {
-                    color: styleText?.color ? styleText?.color : COLORS.text,
+                    color: styleText?.color ? styleText?.color : theme.text,
                     marginBottom: 4,
                     fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',

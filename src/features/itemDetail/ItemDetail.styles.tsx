@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from '../home/home.styles';
 
-export { COLORS };
-
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -42,14 +40,20 @@ export const styles = StyleSheet.create({
 
     itemContainer: {
         width: "100%",
-        height: 300,
-        flexDirection: 'row'
+        paddingHorizontal: 4
+    },
+    itemAttrContainer: {
+        width: "100%",
+        height: 200,
+        flexDirection: 'row',
+        paddingHorizontal: 4
     },
     imageItemContainer: {
         justifyContent: 'center', 
         alignItems: 'center', 
         width: '40%', 
-        height: 200
+        height: 200,
+        marginRight: 4
     },
     itemFrame: {
         position: "absolute",
@@ -62,12 +66,15 @@ export const styles = StyleSheet.create({
         width: '60%', 
         height: 200
     },
-    titleContainer: {
-        flex: 1,
+    statsContainer: {
         width: '100%',
-        height: 200,
-        paddingVertical: 14,
-        paddingHorizontal: 8
+        height: 175,
+        paddingVertical: 2,
+        paddingHorizontal: 8,
+        marginHorizontal: 4,
+        borderWidth: 1,
+        borderColor: COLORS.unique,
+        backgroundImage: 'linear-gradient(to right, #000 75%, transparent 100%)'
     },
     titleItem: {
         color: COLORS.unique,
@@ -83,6 +90,14 @@ export const styles = StyleSheet.create({
         color: 'gray',
         fontSize: 12,
     },
+    attrValue: {
+        fontSize: 12,
+        color: 'gray'
+    },
+    attrNone: {
+        display:'none',
+    },
+
 
 
     title: {
@@ -169,7 +184,11 @@ export const styles = StyleSheet.create({
     containerExplicityStats: {
         alignItems: 'center',
         marginTop: 4,
-        marginBottom: 4
+        marginBottom: 4,
+        paddingVertical: 8,
+        borderWidth: 1,
+        borderColor: COLORS.unique,
+        backgroundColor: "#00000060"
     },
 
     fieldValue: {

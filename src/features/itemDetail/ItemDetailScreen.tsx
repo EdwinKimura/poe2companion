@@ -16,7 +16,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getDatabase } from '../../database/database';
 import { getItemById } from '../../database/repositories/ItemsRepository';
-import { COLORS, styles } from './ItemDetail.styles';
+import { styles } from './ItemDetail.styles';
 
 type ItemData = Record<string, unknown>;
 
@@ -132,7 +132,7 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
             >
                 <ActivityIndicator
                     size="large"
-                    color={COLORS.gold}
+                    color={theme.gold}
                 />
                 <Text style={styles.message}>
                     Carregando item...
@@ -164,6 +164,28 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
     const requiredStrength = formatValue(item.required_strength);
     const requiredDexterity = formatValue(item.required_dexterity);
     const acquisition = formatValue(item.drop_text);
+    const attributesArmour = {
+        'armour': formatValue(item.armour_range_text),
+        'evasion': formatValue(item.evasion_range_text),
+        'energyShield': formatValue(item.energy_shield_range_text),
+        'moveSpeed': formatValue(item.movement_speed),
+        'ward': formatValue(item.ward_range_text),
+    };
+    const attributesWeapon = {
+        'atkSpeed': formatValue(item.attack_speed_range_text),
+        'chaosDmg': formatValue(item.chaos_damage_min_range_text),
+        'coldDmg': formatValue(item.cold_dps_range_text),
+        'critChance': formatValue(item.critical_strike_chance_range_text),
+        'dpsRange': formatValue(item.dps_range_text),
+        'elemDpsRange': formatValue(item.elemental_dps_range_text),
+        'fireDmg': formatValue(item.fire_dps_range_text),
+        'lightDmg': formatValue(item.lightning_dps_range_text),
+        'physicalDmg': formatValue(item.physical_dps_range_text),
+        'poisonDmg': formatValue(item.poison_dps_range_text),
+        'reloadTime': formatValue(item.reload_time_range_text),
+        'spiritRange': formatValue(item.spirit_range_text),
+        'weaponRang': formatValue(item.weapon_range_range_text),
+    };
 
     const excludedFields = new Set([
         'name',
@@ -206,9 +228,12 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                     <Text style={styles.headerButtonText}>‹</Text>
                 </Pressable>
 
-                <Text style={[styles.headerTitle, { color: theme.unique, fontFamily: fonts.cinzel.medium }]}>
-                    {name}
-                </Text>
+                <View>
+                    <Text style={[styles.headerTitle, { color: theme.unique, fontFamily: fonts.cinzel.medium }]}>
+                        {name}
+                    </Text>
+                    <Text style={[{ color: theme.unique, fontFamily: fonts.cinzel.medium, fontSize: 8 }]}>{baseItem}</Text>
+                </View>
 
                 <View style={styles.headerButton} />
             </View>
@@ -216,146 +241,182 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
 
             <ScrollView style={styles.container} contentContainerStyle={styles.content}>
                 <View style={styles.itemContainer}>
-                    <View style={styles.imageItemContainer}>
-                        <Image
-                            style={styles.itemFrame}
-                            source={require('@/assets/images/backgrounds/item/frame_item.png')}
-                            resizeMode="contain"
+                    <Text style={{ marginTop: -10, marginBottom: 12 }}>
+                        <HtmlContent
+                            value={`"${flavourText}"`}
+                            styleText={{
+                                color: theme.unique,
+                                isBold: true,
+                                textAlign: 'left',
+                                fontSize: 10,
+                            }}
                         />
-                        <WikiImage fileName={item.inventory_icon} size={100} />
-                    </View>
-                    <View style={styles.statsItemContainer}>
-                        <View style={styles.titleContainer}>
-                            <Text style={[styles.titleItem]}>{baseItem}</Text>
+                    </Text>
 
-                            <Divider color={'gold'} spaceVertical={4} spaceHorizontal={0} widthDivider={'70%'} align={'flex-start'} fade={'100% 100%'} />
+                    <Text style={[styles.attributes]}>{
+                        `${'Requires Level ' + requiredLevel}` +
+                        `${requiredIntelligence !== '0' ? ', ' + requiredIntelligence + ' Int' : ''}` +
+                        `${requiredStrength !== '0' ? ', ' + requiredStrength + ' Str' : ''}` +
+                        `${requiredDexterity !== '0' ? ', ' + requiredDexterity + ' Dex' : ''}`
+                    }
+                    </Text>
 
-                            <View style={styles.attributesContainer}>
-                                <Text style={[styles.attributes]}>{
-                                    `${'Requires Level ' + requiredLevel}` +
-                                    `${requiredIntelligence !== '0' ? ', ' + requiredIntelligence + ' Int' : ''}` +
-                                    `${requiredStrength !== '0' ? ', ' + requiredStrength + ' Str' : ''}` +
-                                    `${requiredDexterity !== '0' ? ', ' + requiredDexterity + ' Dex' : ''}`
-                                }
+                    <View style={styles.itemAttrContainer}>
+                        <View style={styles.imageItemContainer}>
+                            <Image
+                                style={styles.itemFrame}
+                                source={require('@/assets/images/backgrounds/item/frame_item.png')}
+                                resizeMode="contain"
+                            />
+                            <WikiImage fileName={item.inventory_icon} size={100} />
+                        </View>
+                        <View style={styles.statsItemContainer}>
+                            <View style={styles.statsContainer}>
+                                <Text style={attributesArmour.armour && attributesArmour.armour !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Armour: `}
+                                    <Text style={[styles.attrValue, { color: theme.statsLink }]}>{attributesArmour.armour}</Text>
                                 </Text>
+                                <Text style={attributesArmour.evasion && attributesArmour.evasion !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Evasion: `}
+                                    <Text style={[styles.attrValue]}>{attributesArmour.evasion}</Text>
+                                </Text>
+                                <Text style={attributesArmour.energyShield && attributesArmour.energyShield !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Energy Shield: `}
+                                    <Text style={[styles.attrValue]}>{attributesArmour.energyShield}</Text>
+                                </Text>
+                                <Text style={attributesArmour.moveSpeed && attributesArmour.moveSpeed !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Move Speed: `}
+                                    <Text style={[styles.attrValue]}>{attributesArmour.moveSpeed}</Text>
+                                </Text>
+                                <Text style={attributesArmour.ward && attributesArmour.ward !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Ward: `}
+                                    <Text style={[styles.attrValue]}>{attributesArmour.ward}</Text>
+                                </Text>
+
+                                <Text style={attributesWeapon.physicalDmg && attributesWeapon.physicalDmg !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Physical DMG: `}
+                                    <Text style={[styles.attrValue]}>{attributesWeapon.physicalDmg}</Text>
+                                </Text>
+                                <Text style={
+                                    attributesWeapon.fireDmg && attributesWeapon.fireDmg !== '0' ||
+                                        attributesWeapon.coldDmg && attributesWeapon.coldDmg !== '0' ||
+                                        attributesWeapon.lightDmg && attributesWeapon.lightDmg !== '0' ||
+                                        attributesWeapon.chaosDmg && attributesWeapon.chaosDmg !== '0' ||
+                                        attributesWeapon.poisonDmg && attributesWeapon.poisonDmg !== '0' ?
+                                        [styles.attributes] :
+                                        [styles.attrNone]
+                                }
+                                >{`Elemental DMG: `}</Text>
+                                <Text
+                                    style={
+                                        attributesWeapon.fireDmg && attributesWeapon.fireDmg !== '0' ?
+                                            [styles.attrValue] :
+                                            [styles.attrNone]
+                                    }
+                                >- Fire: <Text style={{ color: 'red' }}>{attributesWeapon.fireDmg}</Text>
+                                </Text>
+                                <Text
+                                    style={
+                                        attributesWeapon.coldDmg && attributesWeapon.coldDmg !== '0' ?
+                                            [styles.attrValue] :
+                                            [styles.attrNone]
+                                    }
+                                >- Cold: <Text style={{ color: theme.statsLink }}>{attributesWeapon.coldDmg}</Text>
+                                </Text>
+                                <Text
+                                    style={
+                                        attributesWeapon.lightDmg && attributesWeapon.lightDmg !== '0' ?
+                                            [styles.attrValue] :
+                                            [styles.attrNone]
+                                    }
+                                >- Lightning: <Text style={{ color: 'yellow' }}>{attributesWeapon.lightDmg}</Text>
+                                </Text>
+                                <Text
+                                    style={
+                                        attributesWeapon.chaosDmg && attributesWeapon.chaosDmg !== '0' ?
+                                            [styles.attrValue] :
+                                            [styles.attrNone]
+                                    }
+                                >- Chaos: <Text style={{ color: 'purple' }}>{attributesWeapon.chaosDmg}</Text>
+                                </Text>
+                                <Text
+                                    style={
+                                        attributesWeapon.poisonDmg && attributesWeapon.poisonDmg !== '0' ?
+                                            [styles.attrValue] :
+                                            [styles.attrNone]
+                                    }
+                                >- Poison: <Text style={{ color: 'green' }}>{attributesWeapon.poisonDmg}</Text>
+                                </Text>
+                                <Text style={attributesWeapon.critChance && attributesWeapon.critChance !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Critical Chance: `}
+                                    <Text style={[styles.attrValue]}>{attributesWeapon.critChance}</Text>
+                                </Text>
+                                <Text style={attributesWeapon.atkSpeed && attributesWeapon.atkSpeed !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Attack Speed: `}
+                                    <Text style={[styles.attrValue]}>{attributesWeapon.atkSpeed}</Text>
+                                </Text>
+                                <Text style={attributesWeapon.critChance && attributesWeapon.reloadTime !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Reload Speed: `}
+                                    <Text style={[styles.attrValue]}>{attributesWeapon.reloadTime}</Text>
+                                </Text>
+
                             </View>
+                        </View>
+                    </View>
+                    <View>
 
-                            <Divider color={'gold'} spaceVertical={4} spaceHorizontal={0} widthDivider={'70%'} align={'flex-start'} fade={'100% 100%'} />
-
-                            <View style={styles.containerFlavorText}>
+                        {implicitStats ? (
+                            <View style={styles.card}>
+                                <Text style={{color: theme.gold, fontFamily: fonts.cinzel.bold, fontSize: 14}}>Implicity Stats</Text>
+                                <Divider color={'gold'} spaceVertical={4} spaceHorizontal={0} widthDivider={'80%'} align={'center'} />
                                 <Text>
                                     <HtmlContent
-                                        value={flavourText}
+                                        value={implicitStats}
                                         styleText={{
-                                            color: COLORS.unique,
-                                            isBold: true,
-                                            textAlign: 'left',
-                                            fontSize: 10,
+                                            color: theme.stats
                                         }}
                                     />
                                 </Text>
                             </View>
-                        </View>
+                        ) : null}
+
+                        {explicitStats ? (
+                            <>
+                                <View style={styles.containerExplicityStats}>
+                                    <Text style={{color: theme.gold, fontFamily: fonts.cinzel.bold, fontSize: 14}}>Explicity Stats</Text>
+                                    <Divider color={'gold'} spaceVertical={4} spaceHorizontal={0} widthDivider={'80%'} align={'center'} />
+                                    <Text>
+                                        <HtmlContent
+                                            value={explicitStats}
+                                            styleText={{
+                                                color: theme.stats,
+                                                isBold: true,
+                                                textAlign: 'center'
+                                            }}
+                                        />
+                                    </Text>
+                                </View>
+                            </>
+                        ) : null}
+
                     </View>
+
                 </View>
 
                 <View style={[styles.itemCard]}>
 
-                    <View style={styles.header}>
-                        <Image
-                            style={[styles.titleBackground, { flex: 1 }]}
-                            source={require('@/assets/images/backgrounds/item/Item_UI_header_double_unique_left.png')}
-                            resizeMode="stretch"
-                        />
-                        <Image
-                            style={[styles.titleBackground, { flex: 4 }]}
-                            source={require('@/assets/images/backgrounds/item/Item_UI_header_double_unique_middle.png')}
-                            resizeMode="stretch"
-
-                        />
-                        <Image
-                            style={[styles.titleBackground, { flex: 1 }]}
-                            source={require('@/assets/images/backgrounds/item/Item_UI_header_double_unique_right.png')}
-                            resizeMode="stretch"
-                        />
-                        <View style={styles.titleContainer}>
-                            <Text style={[styles.titleItem, { marginTop: 'auto', marginBottom: 0 }]}>{name}</Text>
-                            <Text style={[styles.titleItem, { marginTop: 0, marginBottom: 'auto' }]}>{baseItem}</Text>
-                        </View>
-                    </View>
-
-                    <View style={[styles.divider, { experimental_backgroundImage: 'radial-gradient(circle, ' + COLORS.unique + ', transparent)', }]} />
-
-                    <View style={styles.attributesContainer}>
-                        <Text style={[styles.attributes]}>{
-                            `${'Requires Level ' + requiredLevel}` +
-                            `${requiredIntelligence !== '0' ? ', ' + requiredIntelligence + ' Int' : ''}` +
-                            `${requiredStrength !== '0' ? ', ' + requiredStrength + ' Str' : ''}` +
-                            `${requiredDexterity !== '0' ? ', ' + requiredDexterity + ' Dex' : ''}`
-                        }
-                        </Text>
-                    </View>
-
-                    <View style={[styles.divider, { experimental_backgroundImage: 'radial-gradient(circle, ' + COLORS.unique + ', transparent)', }]} />
-
-                    {implicitStats ? (
-                        <View style={styles.card}>
-                            <Text style={styles.sectionTitle}>
-                                Atributos implícitos
-                            </Text>
-                            <Text>
-                                <HtmlContent
-                                    value={implicitStats}
-                                    styleText={{
-                                        color: COLORS.stats
-                                    }}
-                                />
-                            </Text>
-                        </View>
-                    ) : null}
-
-                    {explicitStats ? (
-                        <View style={styles.containerExplicityStats}>
-                            <Text>
-                                <HtmlContent
-                                    value={explicitStats}
-                                    styleText={{
-                                        color: COLORS.stats,
-                                        isBold: true,
-                                        textAlign: 'center'
-                                    }}
-                                />
-                            </Text>
-                        </View>
-                    ) : null}
-
-                    <View style={[styles.divider, { experimental_backgroundImage: 'radial-gradient(circle, ' + COLORS.unique + ', transparent)', }]} />
-
-
-
-                    <View style={{ alignItems: 'center', marginBottom: 16 }}>
-                        <WikiImage fileName={item.inventory_icon} size={120} />
-                    </View>
-                </View>
-
-                <View style={[styles.itemCard]}>
-
-                    <Text style={styles.acquisitionLabel}>Acquisition</Text>
-
-                    <View style={styles.containerAcquisitionText}>
+                    {acquisition ? (
+                        <>
+                            <Text style={styles.acquisitionLabel}>Drops</Text>
+                            <View style={styles.containerAcquisitionText}>
+                                <Text>
+                                    <HtmlContent
+                                        value={acquisition}
+                                        styleText={{
+                                            color: theme.stats,
+                                            isBold: true,
+                                            textAlign: 'center'
+                                        }}
+                                    />
+                                </Text>
+                            </View>
+                        </>
+                    ) : (
                         <Text>
-                            <HtmlContent
-                                value={acquisition}
-                                styleText={{
-                                    color: COLORS.stats,
-                                    isBold: true,
-                                    textAlign: 'center'
-                                }}
-                            />
-                        </Text>
-                    </View>
 
-                    <View style={[styles.divider, { experimental_backgroundImage: 'radial-gradient(circle, ' + COLORS.unique + ', transparent)', }]} />
+                        </Text>
+                    )}
 
                     <Text style={styles.acquisitionLabel}>Metadata</Text>
 
@@ -391,8 +452,6 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                         </Text>
                     </View>
                 ) : null}
-
-
 
                 <View style={styles.card}>
                     <Text style={styles.sectionTitle}>
