@@ -1,8 +1,8 @@
 
-import HomeScreen from "@/features/home/HomeScreen";
-import ItemsScreen from '@/features/items/ItemsScreen';
+import LoadingAssets from '@/features/loadingAssets/LoadingAssetsScreen';
 
 export default function Index() {
-  return <HomeScreen />;
+  //return <HomeScreen />;
   // return <ItemsScreen />;
+  return <LoadingAssets />;
 }

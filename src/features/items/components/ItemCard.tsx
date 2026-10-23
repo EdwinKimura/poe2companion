@@ -1,9 +1,12 @@
 
 import { Pressable, Text, View } from 'react-native';
 
+import HtmlContent from '@/components/html-content';
 import WikiImage from '@/components/wiki-image';
 import { styles } from '../Items.styles';
 import type { ItemCardProps, ItemRarity } from '../types/Items.types';
+
+import { useTheme } from '@/hooks/use-theme';
 
 const RARITIES: ItemRarity[] = [
   {id: 'All', label: 'Todos'},
@@ -17,6 +20,8 @@ export default function ItemCard({
   item,
   onPress,
 }: ItemCardProps) {
+
+  const theme = useTheme();
   
   return (
     <Pressable
@@ -29,7 +34,7 @@ export default function ItemCard({
 
       <View style={styles.itemInfo}>
         <Text style={styles.itemName}>
-          {item.name}
+          <HtmlContent value={item.name} styleText={{color: theme.gold}}/>
         </Text>
 
         <Text style={styles.itemBase}>

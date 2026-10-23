@@ -1,7 +1,9 @@
-import { traceSqlite } from '@/database/debug/sqliteTrace';
+import { SEED_ASSETS } from '@/database/seeds';
+import { SQLiteDatabase } from 'expo-sqlite';
+import { Dispatch, SetStateAction } from 'react';
+import { DimensionValue } from 'react-native';
 import { getDatabase } from '../../database/database';
-import { getDatasetCount, saveDataset } from '../../database/repositories/DataRepository';
-import { fetchAllCargoData, type CargoRow } from '../wiki/cargoData';
+import { getAllDatabaseTables, getDatasetCount } from '../../database/repositories/DataRepository';
 import type { CargoTable } from '../wiki/types/table.type';
 
 export interface SyncDataset {
@@ -14,49 +16,7 @@ export interface SyncDataset {
 }
 
 let syncing = false;
-let batchActive = false;
-let datasetActive = false;
 const syncStatusListeners = new Set<(isSyncing: boolean) => void>();
-
-const SQLITE_WRITE_MAX_ATTEMPTS = 6;
-
-function isSqliteLocked(error: unknown): boolean {
-    const message = error instanceof Error ? error.message : String(error);
-    return /database is locked|database table is locked|SQLITE_BUSY|SQLITE_LOCKED/i.test(message);
-}
-
-function sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-/** Executa escritas de estado com retry se o SQLite estiver temporariamente ocupado. */
-async function runStateWrite(
-    database: Awaited<ReturnType<typeof getDatabase>>,
-    sql: string,
-    ...params: (string | number | null)[]
-): Promise<void> {
-    for (let attempt = 0; ; attempt++) {
-        try {
-            await database.runAsync(sql, ...params);
-            return;
-        } catch (error) {
-            if (!isSqliteLocked(error) || attempt >= SQLITE_WRITE_MAX_ATTEMPTS - 1) {
-                console.error('[Sync] Falha ao gravar estado SQLite:', {
-                    attempt: attempt + 1,
-                    sql,
-                    error,
-                });
-                throw error;
-            }
-
-            const delayMs = Math.min(1000 * 2 ** attempt, 15000);
-            console.warn(
-                `[Sync] SQLite ocupado ao atualizar sync_state; tentativa ${attempt + 2}/${SQLITE_WRITE_MAX_ATTEMPTS} em ${delayMs} ms.`,
-            );
-            await sleep(delayMs);
-        }
-    }
-}
 
 export function isSyncInProgress(): boolean {
     return syncing;
@@ -76,124 +36,127 @@ function setSyncing(value: boolean): void {
     syncStatusListeners.forEach((listener) => listener(value));
 }
 
-/**
- * Reserva o fluxo global ANTES de qualquer consulta SQLite feita por syncAllData.
- * Retorna false quando uma sincronização individual ou geral já está em andamento.
- */
-export function beginSyncBatch(): boolean {
-    if (syncing || batchActive || datasetActive) return false;
-    batchActive = true;
-    setSyncing(true);
-    return true;
+function currentFoundProgress(step: number, setProgressBar: Dispatch<SetStateAction<DimensionValue>>, current: number) {
+    const nextVal = Math.min(Math.round(current + step), 76);
+    setProgressBar(`${nextVal}%` as DimensionValue);
 }
 
-export function endSyncBatch(): void {
-    batchActive = false;
-    if (!datasetActive) setSyncing(false);
-}
-
-/** Executa um dataset dentro do lote exclusivo iniciado por beginSyncBatch. */
-export async function syncDataWithinBatch(
-    config: SyncDataset,
-    onProgress?: (saved: number, totalFetched: number) => void,
-): Promise<number> {
-
-    if (!batchActive) {
-        throw new Error('syncDataWithinBatch precisa ser chamado dentro de syncAllData.');
-    }
-    if (datasetActive) {
-        throw new Error(`Já existe uma tabela em sincronização; não é possível iniciar "${config.dataset}" em paralelo.`);
-    }
-
-    datasetActive = true;
-    try {
-        return await runSync(config, onProgress);
-    } finally {
-        datasetActive = false;
-        // O bloqueio global permanece ativo até endSyncBatch.
-    }
-}
-
-/** Sincronização individual. Não pode competir com um lote geral. */
-export async function syncData(
-    config: SyncDataset,
-    onProgress?: (saved: number, totalFetched: number) => void,
-): Promise<number> {
-    if (syncing || batchActive || datasetActive) {
-        throw new Error(
-            `Já existe uma sincronização em andamento; não é possível iniciar "${config.dataset}" em paralelo.`,
-        );
-    }
-
-    datasetActive = true;
-    setSyncing(true);
-    try {
-        return await runSync(config, onProgress);
-    } finally {
-        datasetActive = false;
-        setSyncing(false);
-    }
-}
-
-async function runSync(
-    config: SyncDataset,
-    onProgress?: (saved: number, totalFetched: number) => void,
-): Promise<number> {
+export async function syncLocalData(
+    setProgressBar: Dispatch<SetStateAction<DimensionValue>>,
+    options?: { onDatasetProgress?: (dataset: string, saved: number, total: number) => void; }
+) {
     const database = await getDatabase();
-    const { dataset, databaseTable, cargo } = config;
+    const tables = await getAllDatabaseTables(database);
+    const validTables = tables.filter(table => table !== 'sync_state' && table !== 'app_metadata');
+    const synchronized: string[] = [];
+    setSyncing(true);
 
-    try {
-        await runStateWrite(
-            database,
-            `INSERT INTO sync_state (dataset, status, record_count)
-             VALUES (?, 'syncing', 0)
-             ON CONFLICT(dataset) DO UPDATE SET status = 'syncing'`,
-            dataset,
-        );
+    const totalValidTables = validTables.length;
+    const progressStepPerTable = totalValidTables > 0 ? 76 / totalValidTables : 76;
 
-        console.log(`[Sync] ${dataset}: estado atualizado; iniciando consulta Cargo.`);
+    let currentGlobalProgress = 0;
 
-        await new Promise((resolve) => setTimeout(resolve, 30));
-
-        let savedCount = 0;
-        const totalFetched = await fetchAllCargoData(
-            cargo,
-            async (batch: CargoRow[], fetched) => {
-                console.log(`[Sync] ${dataset}: lote recebido com ${batch.length} registros.`);
-                const saved = await saveDataset(database, databaseTable, batch);
-                savedCount += saved;
-                console.log(`[Sync] ${dataset}: total processado ${savedCount}`);
-                onProgress?.(savedCount, fetched);
-            },
-        );
-
-        await new Promise((resolve) => setTimeout(resolve, 30));
-
-        const totalInDatabase = await getDatasetCount(database, databaseTable);
-        
-        await runStateWrite(
-            database,
-            `UPDATE sync_state
-             SET status = 'completed', last_sync_at = ?, record_count = ?
-             WHERE dataset = ?`,
-            new Date().toISOString(),
-            totalInDatabase,
-            dataset,
-        );
-
-        console.log(`[Sync] ${dataset} concluída. Recebidos: ${totalFetched}; no banco: ${totalInDatabase}.`);
-        return totalInDatabase;
-    } catch (error) {
+    for (const table of validTables) {
         try {
-            await runStateWrite(
-                database,
-                `UPDATE sync_state SET status = 'failed' WHERE dataset = ?`,
-                dataset,
-            );
-        } catch (statusError) {
-            console.error(`[Sync] Não foi possível marcar "${dataset}" como failed:`, statusError);
+            // Pega o array de arquivos daquela tabela (ex: [ [item1, item2], [item3, item4] ] se for dividida)
+            const jsonParts = SEED_ASSETS[table];
+
+            if (!jsonParts || !Array.isArray(jsonParts)) {
+                console.warn(`[Import] Nenhum seed encontrado para a tabela: ${table}`);
+                continue;
+            }
+
+            // Calcula o total geral de registros somando todas as partes divididas
+            const totalRecords = jsonParts.reduce((acc, part) => acc + (Array.isArray(part) ? part.length : 0), 0);
+            const tableItemsCount = await getDatasetCount(database, table);
+
+            // Dispara o progresso inicial zerado
+            options?.onDatasetProgress?.(table, 0, totalRecords);
+
+            if (tableItemsCount === totalRecords) {
+                currentFoundProgress(progressStepPerTable, setProgressBar, currentGlobalProgress);
+                currentGlobalProgress += progressStepPerTable;
+            } else {
+                await insertJsonDataIntoTable(database, table, jsonParts, (saved, totalCount) => {
+                    options?.onDatasetProgress?.(table, saved, totalCount);
+                });
+
+                // Incrementa a barra com base na proporção da tabela concluída
+                currentGlobalProgress += progressStepPerTable;
+                const clampedProgress = Math.min(Math.round(currentGlobalProgress), 76);
+                setProgressBar(`${clampedProgress}%` as DimensionValue);
+            }
+
+            synchronized.push(table);
+        } catch (error) {
+            console.error(`[Import] Erro ao importar tabela ${table}:`, error);
+            setSyncing(false);
         }
-        console.error(`[Sync] Falha em "${dataset}":`, error);
-        throw error;
+    }
+
+    setSyncing(false);
+    return { synchronized };
+}
+
+export async function insertJsonDataIntoTable(
+    database: SQLiteDatabase,
+    tableName: string,
+    jsonParts: Record<string, any>[][], // Recebe a lista de arquivos (partes)
+    onProgress?: (saved: number, total: number) => void
+): Promise<void> {
+    if (!jsonParts || jsonParts.length === 0) {
+        onProgress?.(0, 0);
+        return;
+    }
+
+    // Calcula o total geral de itens em todas as partes combinadas
+    const totalRecords = jsonParts.reduce((acc, part) => acc + (Array.isArray(part) ? part.length : 0), 0);
+    let cumulativeSaved = 0;
+    const batchSize = 500;
+
+
+    // Itera por cada arquivo/parte da tabela (ex: items1_6.json, items2_6.json...)
+    for (const partData of jsonParts) {
+        if (!Array.isArray(partData) || partData.length === 0) continue;
+
+        const partTotal = partData.length;
+
+        // Itera em lotes (chunks) dentro de cada parte para não travar a UI
+        for (let i = 0; i < partTotal; i += batchSize) {
+            const chunk = partData.slice(i, i + batchSize);
+
+            await database.withTransactionAsync(async () => {
+                for (const row of chunk) {
+
+                    const sanitizedRow: Record<string, any> = {};
+                    for (const [key, value] of Object.entries(row)) {
+                        const cleanKey = key.trim().replace(/[\s-]+/g, '_');
+                        sanitizedRow[cleanKey] = value;
+                    }
+
+                    const columns = Object.keys(sanitizedRow);
+                    const values = Object.values(sanitizedRow);
+
+                    const placeholders = columns.map(() => '?').join(', ');
+                    const columnNames = columns.map(c => `"${c}"`).join(', ');
+
+                    const query = `INSERT OR REPLACE INTO "${tableName}" (${columnNames}) VALUES (${placeholders});`;
+                    await database.runAsync(query, values);
+                }
+            });
+
+            // Atualiza quantos itens da parte atual já foram salvos
+            const partSaved = Math.min(i + batchSize, partTotal);
+            cumulativeSaved = partData === jsonParts[jsonParts.length - 1] ? partSaved : cumulativeSaved + chunk.length;
+
+            // Se for a última parte, garante que atinja o total exato
+            const currentTotalSaved = Math.min(cumulativeSaved, totalRecords);
+
+            // Reporta o progresso total acumulado para a interface
+            onProgress?.(currentTotalSaved, totalRecords);
+
+            // Pausa de 0ms para liberar a thread de UI e evitar travamentos (ANR) no mobile
+            await new Promise((resolve) => setTimeout(resolve, 0));
+        }
     }
 }

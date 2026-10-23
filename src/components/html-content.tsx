@@ -16,7 +16,7 @@ interface HtmlContentProps {
         textAlign?: "left" | "center" | "right" | "justify",
         isBold?: boolean,
         fontSize?: number,
-        
+        fontFamily?: string
     };
 }
 
@@ -80,9 +80,11 @@ export default function HtmlContent({ value, styleText }: HtmlContentProps) {
         return (
             <Text
                 style={{
-                    color: COLORS.text,
-                    fontSize: 14,
+                    color: styleText?.color ? styleText?.color : COLORS.text,
+                    fontSize: styleText?.fontSize ? styleText?.fontSize : 14,
                     lineHeight: 20,
+                    fontWeight: styleText?.isBold ? '700' : 'normal',
+                    textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
                 }}
             >
                 {content}

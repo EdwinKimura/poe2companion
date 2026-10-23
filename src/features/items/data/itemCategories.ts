@@ -37,7 +37,7 @@ export const ITEM_CATEGORIES: ItemCategory[] = [
     icon: 'swords2h',
     subcategories: [
       { id: 'Bow', label: 'Arcos' },
-      { id: 'Stave', label: 'Cajados' },
+      { id: 'Staff', label: 'Cajados' },
       { id: 'Two Hand Sword', label: 'Espadas' },
       { id: 'Two Hand Axe', label: 'Machados' },
       { id: 'Two Hand Mace', label: 'Maças' },

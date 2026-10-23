@@ -192,3 +192,23 @@ export async function getAppVersion() {
 
     return savedversion;
 }
+
+/**
+ * Reseta artificialmente a versão salva no app_metadata para '0.0.0',
+ * forçando a rotina de limpeza/migração a rodar na próxima inicialização.
+ */
+export async function forceResetAppVersion(): Promise<void> {
+    const database = await getDatabase();
+    try {
+        await database.withTransactionAsync(async () => {
+            await database.runAsync(
+                `INSERT OR REPLACE INTO app_metadata (key, value) VALUES ('app_version', ?);`,
+                ['0.0.0']
+            );
+        });
+        console.log('[Database] Versão do app_metadata resetada com sucesso para 0.0.0');
+    } catch (error) {
+        console.error('[Database] Erro ao resetar a versão no app_metadata:', error);
+        throw error;
+    }
+}

@@ -1,4 +1,8 @@
 import HtmlContent from '@/components/html-content';
+import Divider from '@/components/html-divider';
+import WikiImage from '@/components/wiki-image';
+import { Fonts } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
@@ -10,7 +14,6 @@ import {
     View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import WikiImage from '../../components/wiki-image';
 import { getDatabase } from '../../database/database';
 import { getItemById } from '../../database/repositories/ItemsRepository';
 import { COLORS, styles } from './ItemDetail.styles';
@@ -50,6 +53,8 @@ function formatLabel(key: string): string {
 }
 
 export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
+    const theme = useTheme();
+    const fonts = Fonts;
     const [item, setItem] = useState<ItemData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -59,8 +64,6 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
     function handleGoBack() {
         if (router.canGoBack()) {
             router.back();
-        } else {
-            router.replace('/(tabs)');
         }
     }
 
@@ -160,7 +163,7 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
     const requiredIntelligence = formatValue(item.required_intelligence);
     const requiredStrength = formatValue(item.required_strength);
     const requiredDexterity = formatValue(item.required_dexterity);
-    const acquisition = formatValue(item.drop_text)
+    const acquisition = formatValue(item.drop_text);
 
     const excludedFields = new Set([
         'name',
@@ -170,7 +173,6 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
         'description',
         'explicit_stat_text',
         'implicit_stat_text',
-        'html',
         'infobox_html',
         'metabox_html',
         'drop_areas_html',
@@ -190,57 +192,120 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
 
     return (
         <SafeAreaView style={styles.container} edges={['top', 'bottom', 'left', 'right']}>
-            <Pressable onPress={handleGoBack} style={{ flexDirection: 'row', alignItems: 'center', padding: 16, }}>
-                <Text style={styles.backButton}>Voltar</Text>
-            </Pressable>
+            <Image
+                style={styles.backgroundImage}
+                source={require('@/assets/images/backgrounds/item/background_item.png')}
+                resizeMode="cover"
+            />
+            <View style={styles.containerBackButton}>
+                <Pressable
+                    onPress={handleGoBack}
+                    style={styles.headerButton}
+                    accessibilityLabel="Voltar"
+                >
+                    <Text style={styles.headerButtonText}>‹</Text>
+                </Pressable>
+
+                <Text style={[styles.headerTitle, { color: theme.unique, fontFamily: fonts.cinzel.medium }]}>
+                    {name}
+                </Text>
+
+                <View style={styles.headerButton} />
+            </View>
+            <Divider color={'gold'} spaceVertical={0} spaceHorizontal={0} widthDivider={'80%'} align={'flex-start'} />
 
             <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+                <View style={styles.itemContainer}>
+                    <View style={styles.imageItemContainer}>
+                        <Image
+                            style={styles.itemFrame}
+                            source={require('@/assets/images/backgrounds/item/frame_item.png')}
+                            resizeMode="contain"
+                        />
+                        <WikiImage fileName={item.inventory_icon} size={100} />
+                    </View>
+                    <View style={styles.statsItemContainer}>
+                        <View style={styles.titleContainer}>
+                            <Text style={[styles.titleItem]}>{baseItem}</Text>
+
+                            <Divider color={'gold'} spaceVertical={4} spaceHorizontal={0} widthDivider={'70%'} align={'flex-start'} fade={'100% 100%'} />
+
+                            <View style={styles.attributesContainer}>
+                                <Text style={[styles.attributes]}>{
+                                    `${'Requires Level ' + requiredLevel}` +
+                                    `${requiredIntelligence !== '0' ? ', ' + requiredIntelligence + ' Int' : ''}` +
+                                    `${requiredStrength !== '0' ? ', ' + requiredStrength + ' Str' : ''}` +
+                                    `${requiredDexterity !== '0' ? ', ' + requiredDexterity + ' Dex' : ''}`
+                                }
+                                </Text>
+                            </View>
+
+                            <Divider color={'gold'} spaceVertical={4} spaceHorizontal={0} widthDivider={'70%'} align={'flex-start'} fade={'100% 100%'} />
+
+                            <View style={styles.containerFlavorText}>
+                                <Text>
+                                    <HtmlContent
+                                        value={flavourText}
+                                        styleText={{
+                                            color: COLORS.unique,
+                                            isBold: true,
+                                            textAlign: 'left',
+                                            fontSize: 10,
+                                        }}
+                                    />
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+
                 <View style={[styles.itemCard]}>
+
                     <View style={styles.header}>
                         <Image
-                            style={[styles.titleBackground, {flex: 1}]}
+                            style={[styles.titleBackground, { flex: 1 }]}
                             source={require('@/assets/images/backgrounds/item/Item_UI_header_double_unique_left.png')}
                             resizeMode="stretch"
                         />
                         <Image
-                            style={[styles.titleBackground, {flex: 4}]}
+                            style={[styles.titleBackground, { flex: 4 }]}
                             source={require('@/assets/images/backgrounds/item/Item_UI_header_double_unique_middle.png')}
                             resizeMode="stretch"
-                            
+
                         />
                         <Image
-                            style={[styles.titleBackground, {flex: 1}]}
+                            style={[styles.titleBackground, { flex: 1 }]}
                             source={require('@/assets/images/backgrounds/item/Item_UI_header_double_unique_right.png')}
                             resizeMode="stretch"
                         />
                         <View style={styles.titleContainer}>
-                            <Text style={[styles.titleItem, {marginTop: 'auto', marginBottom: 0}]}>{name}</Text>
-                            <Text style={[styles.titleItem, {marginTop: 0, marginBottom: 'auto'}]}>{baseItem}</Text>
-                        </View>                       
+                            <Text style={[styles.titleItem, { marginTop: 'auto', marginBottom: 0 }]}>{name}</Text>
+                            <Text style={[styles.titleItem, { marginTop: 0, marginBottom: 'auto' }]}>{baseItem}</Text>
+                        </View>
                     </View>
 
-                    <View style={[styles.divider, {experimental_backgroundImage: 'radial-gradient(circle, '+ COLORS.unique +', transparent)',}]}/>
+                    <View style={[styles.divider, { experimental_backgroundImage: 'radial-gradient(circle, ' + COLORS.unique + ', transparent)', }]} />
 
                     <View style={styles.attributesContainer}>
                         <Text style={[styles.attributes]}>{
-                            `${'Requires Level ' + requiredLevel }` +
+                            `${'Requires Level ' + requiredLevel}` +
                             `${requiredIntelligence !== '0' ? ', ' + requiredIntelligence + ' Int' : ''}` +
                             `${requiredStrength !== '0' ? ', ' + requiredStrength + ' Str' : ''}` +
-                            `${requiredDexterity !== '0' ? ', ' + requiredDexterity + ' Dex' : ''}` 
-                            }
+                            `${requiredDexterity !== '0' ? ', ' + requiredDexterity + ' Dex' : ''}`
+                        }
                         </Text>
                     </View>
 
-                    <View style={[styles.divider, {experimental_backgroundImage: 'radial-gradient(circle, '+ COLORS.unique +', transparent)',}]} />
-                    
+                    <View style={[styles.divider, { experimental_backgroundImage: 'radial-gradient(circle, ' + COLORS.unique + ', transparent)', }]} />
+
                     {implicitStats ? (
                         <View style={styles.card}>
                             <Text style={styles.sectionTitle}>
                                 Atributos implícitos
                             </Text>
                             <Text>
-                                <HtmlContent 
-                                    value={implicitStats} 
+                                <HtmlContent
+                                    value={implicitStats}
                                     styleText={{
                                         color: COLORS.stats
                                     }}
@@ -252,7 +317,7 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                     {explicitStats ? (
                         <View style={styles.containerExplicityStats}>
                             <Text>
-                                <HtmlContent 
+                                <HtmlContent
                                     value={explicitStats}
                                     styleText={{
                                         color: COLORS.stats,
@@ -264,20 +329,9 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                         </View>
                     ) : null}
 
-                    <View style={[styles.divider, {experimental_backgroundImage: 'radial-gradient(circle, '+ COLORS.unique +', transparent)',}]} />
-                    
-                    <View style={styles.containerExplicityStats}>
-                        <Text>
-                            <HtmlContent 
-                                value={flavourText} 
-                                styleText={{
-                                    color: COLORS.unique,
-                                    isBold: true,
-                                    textAlign: 'center',
-                                }}
-                            />
-                        </Text>
-                    </View>
+                    <View style={[styles.divider, { experimental_backgroundImage: 'radial-gradient(circle, ' + COLORS.unique + ', transparent)', }]} />
+
+
 
                     <View style={{ alignItems: 'center', marginBottom: 16 }}>
                         <WikiImage fileName={item.inventory_icon} size={120} />
@@ -290,7 +344,7 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
 
                     <View style={styles.containerAcquisitionText}>
                         <Text>
-                            <HtmlContent 
+                            <HtmlContent
                                 value={acquisition}
                                 styleText={{
                                     color: COLORS.stats,
@@ -301,10 +355,10 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                         </Text>
                     </View>
 
-                    <View style={[styles.divider, {experimental_backgroundImage: 'radial-gradient(circle, '+ COLORS.unique +', transparent)',}]} />
+                    <View style={[styles.divider, { experimental_backgroundImage: 'radial-gradient(circle, ' + COLORS.unique + ', transparent)', }]} />
 
                     <Text style={styles.acquisitionLabel}>Metadata</Text>
-                    
+
                     <View style={styles.containerAcquisitionText}>
                         {itemClass ? (
                             <Text style={styles.metadata}>
@@ -338,7 +392,7 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                     </View>
                 ) : null}
 
-                
+
 
                 <View style={styles.card}>
                     <Text style={styles.sectionTitle}>

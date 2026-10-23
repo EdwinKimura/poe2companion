@@ -1,9 +1,8 @@
 import { getDatabase } from '@/database/database';
-import { getAllDatabaseTables } from '@/database/repositories/DataRepository';
+import { getAllDatabaseTables, getDatasetCount } from '@/database/repositories/DataRepository';
 import { SEED_ASSETS } from '@/database/seeds';
 import { SQLiteDatabase } from 'expo-sqlite';
 
-// Exemplo simulado de importação de JSONs locais
 export async function importLocalData(options?: {
     onDatasetProgress?: (dataset: string, saved: number, total: number) => void;
 }) {
@@ -11,22 +10,32 @@ export async function importLocalData(options?: {
     const tables = await getAllDatabaseTables(database);
     const synchronized: string[] = [];
 
-    for (const table of tables) {
+    for (const table of tables) { 
         if (table !== 'sync_state' && table !== 'app_metadata') {
             try {
-                let jsonData = SEED_ASSETS[table];
-                console.log(jsonData.length)
+                // Pega o array de arquivos daquela tabela (ex: [ [item1, item2], [item3, item4] ] se for dividida)
+                const jsonParts = SEED_ASSETS[table];
 
-                // await insertJsonDataIntoTable(database, table, jsonData, (saved, totalCount) => {
-                //     options?.onDatasetProgress?.(table, saved, totalCount);
-                // });
+                if (!jsonParts || !Array.isArray(jsonParts)) {
+                    console.warn(`[Import] Nenhum seed encontrado para a tabela: ${table}`);
+                    continue;
+                }
 
-                // synchronized.push(table);
+                // Calcula o total geral de registros somando todas as partes divididas
+                const totalRecords = jsonParts.reduce((acc, part) => acc + (Array.isArray(part) ? part.length : 0), 0);
+
+                // Dispara o progresso inicial zerado
+                options?.onDatasetProgress?.(table, 0, totalRecords);
+
+                await insertJsonDataIntoTable(database, table, jsonParts, (saved, totalCount) => {
+                    options?.onDatasetProgress?.(table, saved, totalCount);
+                });
+
+                synchronized.push(table);
             } catch (error) {
                 console.error(`[Import] Erro ao importar tabela ${table}:`, error);
             }
         }
-
     }
 
     return { synchronized };
@@ -35,37 +44,65 @@ export async function importLocalData(options?: {
 export async function insertJsonDataIntoTable(
     database: SQLiteDatabase,
     tableName: string,
-    jsonData: Record<string, any>[],
+    jsonParts: Record<string, any>[][], // Recebe a lista de arquivos (partes)
     onProgress?: (saved: number, total: number) => void
 ): Promise<void> {
-
-    if (!jsonData || jsonData.length === 0) {
+    if (!jsonParts || jsonParts.length === 0) {
         onProgress?.(0, 0);
         return;
     }
 
-    const total = jsonData.length;
+    const tableItemsCount = await getDatasetCount(database, tableName);
+
+    // Calcula o total geral de itens em todas as partes combinadas
+    const totalRecords = jsonParts.reduce((acc, part) => acc + (Array.isArray(part) ? part.length : 0), 0);
+    let cumulativeSaved = 0;
     const batchSize = 500;
 
+    if(tableItemsCount === totalRecords) return;
+    
+    // Itera por cada arquivo/parte da tabela (ex: items1_6.json, items2_6.json...)
+    for (const partData of jsonParts) {
+        if (!Array.isArray(partData) || partData.length === 0) continue;
 
-    for (let i = 0; i < total; i += batchSize) {
-        const chunk = jsonData.slice(i, i + batchSize);
+        const partTotal = partData.length;
 
-        await database.withTransactionAsync(async () => {
-            for (const row of chunk) {
-                const columns = Object.keys(row);
-                const values = Object.values(row);
+        // Itera em lotes (chunks) dentro de cada parte para não travar a UI
+        for (let i = 0; i < partTotal; i += batchSize) {
+            const chunk = partData.slice(i, i + batchSize);
 
-                const placeholders = columns.map(() => '?').join(', ');
-                const columnNames = columns.map(c => `"${c}"`).join(', ');
+            await database.withTransactionAsync(async () => {
+                for (const row of chunk) {
 
-                const query = `INSERT OR REPLACE INTO "${tableName}" (${columnNames}) VALUES (${placeholders});`;
+                    const sanitizedRow: Record<string, any> = {};
+                    for (const [key, value] of Object.entries(row)) {
+                        const cleanKey = key.trim().replace(/[\s-]+/g, '_');
+                        sanitizedRow[cleanKey] = value;
+                    }
 
-                await database.runAsync(query, values);
-            }
-        });
+                    const columns = Object.keys(sanitizedRow);
+                    const values = Object.values(sanitizedRow);
 
-        const currentSaved = Math.min(i + batchSize, total);
-        onProgress?.(currentSaved, total);
+                    const placeholders = columns.map(() => '?').join(', ');
+                    const columnNames = columns.map(c => `"${c}"`).join(', ');
+
+                    const query = `INSERT OR REPLACE INTO "${tableName}" (${columnNames}) VALUES (${placeholders});`;
+                    await database.runAsync(query, values);
+                }
+            });
+
+            // Atualiza quantos itens da parte atual já foram salvos
+            const partSaved = Math.min(i + batchSize, partTotal);
+            cumulativeSaved = partData === jsonParts[jsonParts.length - 1] ? partSaved : cumulativeSaved + chunk.length;
+
+            // Se for a última parte, garante que atinja o total exato
+            const currentTotalSaved = Math.min(cumulativeSaved, totalRecords);
+
+            // Reporta o progresso total acumulado para a interface
+            onProgress?.(currentTotalSaved, totalRecords);
+
+            // Pausa de 0ms para liberar a thread de UI e evitar travamentos (ANR) no mobile
+            await new Promise((resolve) => setTimeout(resolve, 0));
+        }
     }
 }
