@@ -7,6 +7,7 @@ import {
     useWindowDimensions,
 } from 'react-native';
 
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 interface HtmlContentProps {
@@ -16,7 +17,7 @@ interface HtmlContentProps {
         textAlign?: "left" | "center" | "right" | "justify",
         isBold?: boolean,
         fontSize?: number,
-        fontFamily?: string
+        hasFont?: boolean
     };
 }
 
@@ -58,6 +59,7 @@ function wikiLinksToHtml(value: string): string {
 export default function HtmlContent({ value, styleText }: HtmlContentProps) {
     const { width } = useWindowDimensions();
     const theme = useTheme();
+     const fonts = Fonts;
 
     const content = useMemo(() => {
         if (value === null || value === undefined) {
@@ -83,9 +85,8 @@ export default function HtmlContent({ value, styleText }: HtmlContentProps) {
                 style={{
                     color: styleText?.color ? styleText?.color : theme.text,
                     fontSize: styleText?.fontSize ? styleText?.fontSize : 14,
-                    lineHeight: 20,
-                    fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.medium : fonts.inter.Light
                 }}
             >
                 {content}
@@ -109,60 +110,60 @@ export default function HtmlContent({ value, styleText }: HtmlContentProps) {
                     color: styleText?.color ? styleText?.color : theme.text,
                     fontSize: styleText?.fontSize ? styleText?.fontSize : 14,
                     lineHeight: 20,
-                    fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.medium : fonts.inter.Light
                 },
                 p: {
                     color: styleText?.color ? styleText?.color : theme.text,
                     marginTop: 0,
                     marginBottom: 8,
-                    fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.medium : fonts.inter.Light
                 },
                 span: {
                     color: styleText?.color ? styleText?.color : theme.text,
-                    fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.medium : fonts.inter.Light
                 },
                 em: {
                     color: styleText?.color ? styleText?.color : theme.gold,
-                    fontStyle: 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.medium : fonts.inter.Light
                 },
                 strong: {
                     color: styleText?.color ? styleText?.color : theme.text,
-                    fontWeight: '700',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.bold : fonts.inter.bold
                 },
                 a: {
                     color: theme.gold,
                     textDecorationLine: 'underline',
-                    fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.medium : fonts.inter.Light
                 },
                 h1: {
                     color: styleText?.color ? styleText?.color : theme.text,
                     fontSize: 20,
-                    fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.medium : fonts.inter.Light
                 },
                 h2: {
                     color: styleText?.color ? styleText?.color : theme.text,
                     fontSize: 18,
-                    fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.medium : fonts.inter.Light
                 },
                 h3: {
                     color: styleText?.color ? styleText?.color : theme.text,
                     fontSize: 16,
-                    fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.medium : fonts.inter.Light
                 },
                 li: {
                     color: styleText?.color ? styleText?.color : theme.text,
                     marginBottom: 4,
-                    fontWeight: styleText?.isBold ? '700' : 'normal',
                     textAlign: styleText?.textAlign ? styleText?.textAlign : 'left',
+                    fontFamily: styleText?.hasFont ? fonts.cinzel.medium : fonts.inter.Light
                 },
             }}
         />

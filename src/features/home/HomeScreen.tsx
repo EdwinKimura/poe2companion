@@ -267,7 +267,7 @@ export default function HomeScreen() {
                                         }}
                                         style={({ pressed }) => [
                                             styles.featureCard,
-                                            !feature.enabled && { opacity: 0.5 },
+                                            !feature.enabled && { opacity: 0.3 },
                                             pressed && feature.enabled && { backgroundColor: theme.surfaceLight, opacity: 0.8 },
                                             { backgroundColor: theme.surface, borderColor: theme.border }
                                         ]}

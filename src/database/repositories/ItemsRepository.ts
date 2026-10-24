@@ -85,15 +85,29 @@ export async function getItemById(database: SQLiteDatabase,id: number): Promise<
             a.movement_speed,
             a.ward_range_text,
             w.attack_speed_range_text,
-            w.chaos_damage_min_range_text,
-            w.cold_dps_range_text,
+            w.chaos_damage_min_range_minimum,
+            w.chaos_damage_min_range_maximum,
+            w.chaos_damage_max_range_minimum,
+            w.chaos_damage_max_range_maximum,
+            w.cold_damage_min_range_minimum,
+            w.cold_damage_min_range_maximum,
+            w.cold_damage_max_range_minimum,
+            w.cold_damage_max_range_maximum,
+            w.fire_damage_min_range_minimum,
+            w.fire_damage_min_range_maximum,
+            w.fire_damage_max_range_minimum,
+            w.fire_damage_max_range_maximum,
+            w.lightning_damage_min_range_minimum,
+            w.lightning_damage_min_range_maximum,
+            w.lightning_damage_max_range_minimum,
+            w.lightning_damage_max_range_maximum,
+            w.poison_dps_range_minimum,
+            w.poison_dps_range_maximum,
             w.critical_strike_chance_range_text,
             w.dps_range_text,
             w.elemental_dps_range_text,
-            w.fire_dps_range_text,
-            w.lightning_dps_range_text,
-            w.physical_dps_range_text,
-            w.poison_dps_range_text,
+            w.physical_damage_max_range_text,
+            w.physical_damage_min_range_text,
             w.reload_time_range_text,
             w.spirit_range_text,
             w.weapon_range_range_text
@@ -139,11 +153,13 @@ export async function getItemsByCategory(
     query += ` 
         ORDER BY
             RTRIM(class, '0123456789 ') ASC,
-            CAST(SUBSTR(class, LENGTH(RTRIM(class, '0123456789 ')) + 1) AS INTEGER) ASC
-            LIMIT ? OFFSET ?;
+            CAST(SUBSTR(class, LENGTH(RTRIM(class, '0123456789 ')) + 1) AS INTEGER) ASC;
     `;
 
-    params.push(limit, offset);
+    // query += `
+    //     LIMIT ? OFFSET ?
+    // `
+    // params.push(limit, offset);
 
     return database.getAllAsync<ItemSearchResult>(query, params);
 }

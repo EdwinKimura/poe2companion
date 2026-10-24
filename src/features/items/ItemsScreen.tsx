@@ -25,50 +25,11 @@ import { getItemsByCategory } from '@/database/repositories/ItemsRepository';
 import { clearImageCacheQueue } from '@/services/imageCacheService';
 
 import type {
-  Item,
   ItemCategory,
   ItemSubcategory,
   RarityFilter,
 } from './types/Items.types';
 
-const MOCK_ITEMS: Item[] = [
-  {
-    id: 1,
-    name: 'Elmo de Ferro',
-    base: 'Helmets',
-    rarity: 'Normal',
-    category: 'Armaduras',
-    subcategoryId: 'Helmets',
-    required_level: 10,
-  },
-  {
-    id: 2,
-    name: 'Elmo Reforçado',
-    base: 'Helmets',
-    rarity: 'Magic',
-    category: 'Armaduras',
-    subcategoryId: 'Helmets',
-    required_level: 25,
-  },
-  {
-    id: 3,
-    name: 'Coroa de Guerra',
-    base: 'Helmets',
-    rarity: 'Rare',
-    category: 'Armaduras',
-    subcategoryId: 'Helmets',
-    required_level: 40,
-  },
-  {
-    id: 4,
-    name: 'Anel de Ferro',
-    base: 'Ring',
-    rarity: 'Normal',
-    category: 'Pedrarias',
-    subcategoryId: 'Rings',
-    required_level: 5,
-  },
-];
 
 export default function ItemsScreen() {
   const router = useRouter();

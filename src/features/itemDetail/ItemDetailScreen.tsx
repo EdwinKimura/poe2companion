@@ -46,10 +46,22 @@ function formatValue(value: unknown): string {
 
 function formatLabel(key: string): string {
     return key
-        .replace(/^_/, '')
-        .replace(/_/g, ' ')
-        .replace(/([a-z])([A-Z])/g, '$1 $2')
-        .replace(/\b\w/g, (letter) => letter.toUpperCase());
+        .replace(/&amp;#0*39;/gi, "'")
+        .replace(/&#0*39;|&apos;/gi, "'")
+        .replace(/&amp;quot;|&quot;/gi, '"')
+        .replace(/&amp;lt;|&lt;/gi, '<')
+        .replace(/&amp;gt;|&gt;/gi, '>')
+        .replace(/&amp;/gi, '&');
+}
+
+function removeHtmlEntities(key: string): string {
+    return key
+        .replace(/<br>|<br\/>|<\/br>/gi, "\n")
+        .replace(/<p>|<\/p>/gi, "")
+        .replace(/<h1>|<\/h1>/gi, '')
+        .replace(/<h2>|<\/h2>/gi, '')
+        .replace(/<h3>|<\/h3>/gi, '')
+        .replace(/<strong>|<\/strong>/gi, '')
 }
 
 export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
@@ -151,11 +163,12 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
         );
     }
 
-    const name = formatValue(item.name) || formatValue(item._pageTitle) || 'Item sem nome';
+    const name = formatLabel(formatValue(item.name)) || formatLabel(formatValue(item._pageTitle)) || 'Item sem nome';
     const baseItem = formatValue(item.base_item) || formatValue(item.base_item_page);
     const itemClass = formatValue(item.class);
     const rarity = formatValue(item.rarity);
-    const flavourText = formatValue(item.flavour_text);
+    const frameType = formatValue(item.frame_type);
+    const flavourText = removeHtmlEntities(formatLabel(formatValue(item.flavour_text)));
     const description = formatValue(item.description);
     const explicitStats = formatValue(item.explicit_stat_text);
     const implicitStats = formatValue(item.implicit_stat_text);
@@ -164,6 +177,7 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
     const requiredStrength = formatValue(item.required_strength);
     const requiredDexterity = formatValue(item.required_dexterity);
     const acquisition = formatValue(item.drop_text);
+    const dropAreas = formatValue(item.drop_areas);
     const attributesArmour = {
         'armour': formatValue(item.armour_range_text),
         'evasion': formatValue(item.evasion_range_text),
@@ -173,44 +187,45 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
     };
     const attributesWeapon = {
         'atkSpeed': formatValue(item.attack_speed_range_text),
-        'chaosDmg': formatValue(item.chaos_damage_min_range_text),
-        'coldDmg': formatValue(item.cold_dps_range_text),
+        'hasChaos':
+            item.chaos_damage_min_range_minimum && item.chaos_damage_min_range_minimum !== '0' ||
+            item.chaos_damage_min_range_maximum && item.chaos_damage_min_range_maximum !== '0' ||
+            item.chaos_damage_max_range_minimum && item.chaos_damage_max_range_minimum !== '0' ||
+            item.chaos_damage_max_range_maximum && item.chaos_damage_max_range_maximum !== '0',
+        'chaosDmg': formatValue(`(${item.chaos_damage_min_range_minimum} - ${item.chaos_damage_min_range_maximum}) to (${item.chaos_damage_max_range_minimum} - ${item.chaos_damage_max_range_maximum})`),
+        'hasCold':
+            item.cold_damage_max_range_minimum && item.cold_damage_max_range_minimum !== '0' ||
+            item.cold_damage_max_range_maximum && item.cold_damage_max_range_maximum !== '0' ||
+            item.cold_damage_min_range_minimum && item.cold_damage_min_range_minimum !== '0' ||
+            item.cold_damage_min_range_maximum && item.cold_damage_min_range_maximum !== '0',
+        'coldDmg': formatValue(`(${item.cold_damage_min_range_minimum} - ${item.cold_damage_min_range_maximum}) to (${item.cold_damage_max_range_minimum} - ${item.cold_damage_max_range_maximum})`),
+        'hasFire':
+            item.fire_damage_min_range_minimum && item.fire_damage_min_range_minimum !== '0' ||
+            item.fire_damage_min_range_maximum && item.fire_damage_min_range_maximum !== '0' ||
+            item.fire_damage_max_range_minimum && item.fire_damage_max_range_minimum !== '0' ||
+            item.fire_damage_max_range_maximum && item.fire_damage_max_range_maximum !== '0',
+        'fireDmg': formatValue(`(${item.fire_damage_min_range_minimum} - ${item.fire_damage_min_range_maximum}) to (${item.fire_damage_max_range_minimum} - ${item.fire_damage_max_range_maximum})`),
+        'hasLightning':
+            item.lightning_damage_min_range_minimum && item.lightning_damage_min_range_minimum !== '0' ||
+            item.lightning_damage_min_range_maximum && item.lightning_damage_min_range_maximum !== '0' ||
+            item.lightning_damage_max_range_minimum && item.lightning_damage_max_range_minimum !== '0' ||
+            item.lightning_damage_max_range_maximum && item.lightning_damage_max_range_maximum !== '0',
+        'lightDmg': formatValue(`(${item.lightning_damage_min_range_minimum} - ${item.lightning_damage_min_range_maximum}) to (${item.lightning_damage_max_range_minimum} - ${item.lightning_damage_max_range_maximum})`),
+        'hasPhysical':
+            item.physical_damage_min_range_text && item.physical_damage_min_range_text !== '0' ||
+            item.physical_damage_max_range_text && item.physical_damage_max_range_text !== '0',
+        'physicalDmg': formatValue(`${item.physical_damage_min_range_text} - ${item.physical_damage_max_range_text}`),
+        'hasPoison':
+            item.poison_dps_range_minimum && item.poison_dps_range_minimum !== '0' ||
+            item.poison_dps_range_maximum && item.poison_dps_range_maximum !== '0',
+        'poisonDmg': formatValue(`(${item.poison_dps_range_minimum} - ${item.poison_dps_range_maximum})`),
         'critChance': formatValue(item.critical_strike_chance_range_text),
         'dpsRange': formatValue(item.dps_range_text),
         'elemDpsRange': formatValue(item.elemental_dps_range_text),
-        'fireDmg': formatValue(item.fire_dps_range_text),
-        'lightDmg': formatValue(item.lightning_dps_range_text),
-        'physicalDmg': formatValue(item.physical_dps_range_text),
-        'poisonDmg': formatValue(item.poison_dps_range_text),
         'reloadTime': formatValue(item.reload_time_range_text),
         'spiritRange': formatValue(item.spirit_range_text),
         'weaponRang': formatValue(item.weapon_range_range_text),
     };
-
-    const excludedFields = new Set([
-        'name',
-        '_pageTitle',
-        'class',
-        'rarity',
-        'description',
-        'explicit_stat_text',
-        'implicit_stat_text',
-        'infobox_html',
-        'metabox_html',
-        'drop_areas_html',
-        'required_level_html',
-        'required_strength_html',
-        'required_dexterity_html',
-        'required_intelligence_html',
-    ]);
-
-    const remainingFields = Object.entries(item).filter(
-        ([key, value]) =>
-            !excludedFields.has(key) &&
-            value !== null &&
-            value !== undefined &&
-            value !== '',
-    );
 
     return (
         <SafeAreaView style={styles.container} edges={['top', 'bottom', 'left', 'right']}>
@@ -222,253 +237,286 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
             <View style={styles.containerBackButton}>
                 <Pressable
                     onPress={handleGoBack}
-                    style={styles.headerButton}
+                    style={styles.backButton}
                     accessibilityLabel="Voltar"
                 >
-                    <Text style={styles.headerButtonText}>‹</Text>
+                    <Text style={styles.backButtonText}>‹</Text>
                 </Pressable>
 
                 <View>
-                    <Text style={[styles.headerTitle, { color: theme.unique, fontFamily: fonts.cinzel.medium }]}>
+                    <Text style={frameType === 'unique' ? { color: theme.unique, fontFamily: fonts.cinzel.medium, fontSize: 16 } : { color: theme.stats, fontFamily: fonts.cinzel.medium, fontSize: 16}}>
                         {name}
                     </Text>
-                    <Text style={[{ color: theme.unique, fontFamily: fonts.cinzel.medium, fontSize: 8 }]}>{baseItem}</Text>
+                    <Text style={frameType === 'unique' ? { color: theme.unique, fontFamily: fonts.cinzel.medium, fontSize: 8 }  : { color: theme.stats, fontFamily: fonts.cinzel.medium, fontSize: 8 }}>
+                        {baseItem}
+                    </Text>
                 </View>
 
-                <View style={styles.headerButton} />
+                <View style={styles.backButton} />
             </View>
             <Divider color={'gold'} spaceVertical={0} spaceHorizontal={0} widthDivider={'80%'} align={'flex-start'} />
 
             <ScrollView style={styles.container} contentContainerStyle={styles.content}>
                 <View style={styles.itemContainer}>
-                    <Text style={{ marginTop: -10, marginBottom: 12 }}>
-                        <HtmlContent
-                            value={`"${flavourText}"`}
-                            styleText={{
-                                color: theme.unique,
-                                isBold: true,
-                                textAlign: 'left',
-                                fontSize: 10,
-                            }}
-                        />
-                    </Text>
 
-                    <Text style={[styles.attributes]}>{
-                        `${'Requires Level ' + requiredLevel}` +
-                        `${requiredIntelligence !== '0' ? ', ' + requiredIntelligence + ' Int' : ''}` +
-                        `${requiredStrength !== '0' ? ', ' + requiredStrength + ' Str' : ''}` +
-                        `${requiredDexterity !== '0' ? ', ' + requiredDexterity + ' Dex' : ''}`
-                    }
-                    </Text>
+                    <View style={
+                        frameType === 'unique' ?
+                            [styles.itemAttrContainer, styles.outerBorder, { borderColor: theme.unique, marginBottom: 12, backgroundColor: '#00000080' }] :
+                            [styles.itemAttrContainer, styles.outerBorder, { borderColor: theme.stats, marginBottom: 12, backgroundColor: '#00000080' }]
+                    }>
+                        <View style={
+                            frameType === 'unique' ?
+                                [styles.itemAttrContainer, styles.innerBorder, { borderColor: theme.unique, paddingHorizontal: 12 }] :
+                                [styles.itemAttrContainer, styles.innerBorder, { borderColor: theme.stats, paddingHorizontal: 12 }]
+                        }>
+                            <Text style={{ color: theme.gold, fontFamily: fonts.cinzel.semiBold, width: '100%' }}>
+                                General Information
+                            </Text>
 
-                    <View style={styles.itemAttrContainer}>
-                        <View style={styles.imageItemContainer}>
-                            <Image
-                                style={styles.itemFrame}
-                                source={require('@/assets/images/backgrounds/item/frame_item.png')}
-                                resizeMode="contain"
-                            />
-                            <WikiImage fileName={item.inventory_icon} size={100} />
+                            <View style={styles.containerInfo}>
+                                <View style={{ maxWidth: '35%' }}>
+                                    <Text style={styles.infoLabel}>Name:</Text>
+                                    <Text style={styles.infoLabel}>Base Item:</Text>
+                                    <Text style={styles.infoLabel}>Class:</Text>
+                                    <Text style={styles.infoLabel}>Rarity:</Text>
+                                    <Text style={styles.infoLabel}>Description:</Text>
+                                </View>
+                                <View style={{ flex: 1, maxWidth: '65%' }}>
+                                    <Text style={frameType === 'unique' ? { color: theme.unique } : { color: theme.stats }}>
+                                        <HtmlContent
+                                            value={name}
+                                            styleText={frameType === 'unique' ? { color: theme.unique } : { color: theme.stats }}
+                                        />
+                                    </Text>
+                                    <Text style={frameType === 'unique' ? { color: theme.unique, fontFamily: fonts.inter.Light } : { color: theme.stats, fontFamily: fonts.inter.Light }}>{baseItem}</Text>
+                                    <Text style={frameType === 'unique' ? { color: theme.unique, fontFamily: fonts.inter.Light } : { color: theme.stats, fontFamily: fonts.inter.Light }}>{itemClass}</Text>
+                                    <Text style={frameType === 'unique' ? [{ color: theme.unique, fontFamily: fonts.inter.Light }] : { color: theme.stats, fontFamily: fonts.inter.Light }}>{rarity}</Text>
+                                    <Text style={{ color: theme.stats }}>{
+                                        description ?
+                                            (
+                                                <HtmlContent
+                                                    value={description}
+                                                    styleText={{
+                                                        color: theme.stats
+                                                    }}
+                                                />
+                                            ) :
+                                            (
+                                                <HtmlContent
+                                                    value={""}
+                                                    styleText={{
+                                                        color: theme.stats
+                                                    }}
+                                                />
+                                            )
+                                    }</Text>
+                                </View>
+                            </View>
                         </View>
-                        <View style={styles.statsItemContainer}>
-                            <View style={styles.statsContainer}>
-                                <Text style={attributesArmour.armour && attributesArmour.armour !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Armour: `}
-                                    <Text style={[styles.attrValue, { color: theme.statsLink }]}>{attributesArmour.armour}</Text>
-                                </Text>
-                                <Text style={attributesArmour.evasion && attributesArmour.evasion !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Evasion: `}
-                                    <Text style={[styles.attrValue]}>{attributesArmour.evasion}</Text>
-                                </Text>
-                                <Text style={attributesArmour.energyShield && attributesArmour.energyShield !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Energy Shield: `}
-                                    <Text style={[styles.attrValue]}>{attributesArmour.energyShield}</Text>
-                                </Text>
-                                <Text style={attributesArmour.moveSpeed && attributesArmour.moveSpeed !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Move Speed: `}
-                                    <Text style={[styles.attrValue]}>{attributesArmour.moveSpeed}</Text>
-                                </Text>
-                                <Text style={attributesArmour.ward && attributesArmour.ward !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Ward: `}
-                                    <Text style={[styles.attrValue]}>{attributesArmour.ward}</Text>
-                                </Text>
 
-                                <Text style={attributesWeapon.physicalDmg && attributesWeapon.physicalDmg !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Physical DMG: `}
-                                    <Text style={[styles.attrValue]}>{attributesWeapon.physicalDmg}</Text>
-                                </Text>
-                                <Text style={
-                                    attributesWeapon.fireDmg && attributesWeapon.fireDmg !== '0' ||
-                                        attributesWeapon.coldDmg && attributesWeapon.coldDmg !== '0' ||
-                                        attributesWeapon.lightDmg && attributesWeapon.lightDmg !== '0' ||
-                                        attributesWeapon.chaosDmg && attributesWeapon.chaosDmg !== '0' ||
-                                        attributesWeapon.poisonDmg && attributesWeapon.poisonDmg !== '0' ?
-                                        [styles.attributes] :
-                                        [styles.attrNone]
-                                }
-                                >{`Elemental DMG: `}</Text>
-                                <Text
-                                    style={
-                                        attributesWeapon.fireDmg && attributesWeapon.fireDmg !== '0' ?
-                                            [styles.attrValue] :
-                                            [styles.attrNone]
-                                    }
-                                >- Fire: <Text style={{ color: 'red' }}>{attributesWeapon.fireDmg}</Text>
-                                </Text>
-                                <Text
-                                    style={
-                                        attributesWeapon.coldDmg && attributesWeapon.coldDmg !== '0' ?
-                                            [styles.attrValue] :
-                                            [styles.attrNone]
-                                    }
-                                >- Cold: <Text style={{ color: theme.statsLink }}>{attributesWeapon.coldDmg}</Text>
-                                </Text>
-                                <Text
-                                    style={
-                                        attributesWeapon.lightDmg && attributesWeapon.lightDmg !== '0' ?
-                                            [styles.attrValue] :
-                                            [styles.attrNone]
-                                    }
-                                >- Lightning: <Text style={{ color: 'yellow' }}>{attributesWeapon.lightDmg}</Text>
-                                </Text>
-                                <Text
-                                    style={
-                                        attributesWeapon.chaosDmg && attributesWeapon.chaosDmg !== '0' ?
-                                            [styles.attrValue] :
-                                            [styles.attrNone]
-                                    }
-                                >- Chaos: <Text style={{ color: 'purple' }}>{attributesWeapon.chaosDmg}</Text>
-                                </Text>
-                                <Text
-                                    style={
-                                        attributesWeapon.poisonDmg && attributesWeapon.poisonDmg !== '0' ?
-                                            [styles.attrValue] :
-                                            [styles.attrNone]
-                                    }
-                                >- Poison: <Text style={{ color: 'green' }}>{attributesWeapon.poisonDmg}</Text>
-                                </Text>
-                                <Text style={attributesWeapon.critChance && attributesWeapon.critChance !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Critical Chance: `}
-                                    <Text style={[styles.attrValue]}>{attributesWeapon.critChance}</Text>
-                                </Text>
-                                <Text style={attributesWeapon.atkSpeed && attributesWeapon.atkSpeed !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Attack Speed: `}
-                                    <Text style={[styles.attrValue]}>{attributesWeapon.atkSpeed}</Text>
-                                </Text>
-                                <Text style={attributesWeapon.critChance && attributesWeapon.reloadTime !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Reload Speed: `}
-                                    <Text style={[styles.attrValue]}>{attributesWeapon.reloadTime}</Text>
-                                </Text>
+                        <View style={
+                            frameType === 'unique' ?
+                                [styles.itemAttrContainer, styles.innerBorder, { borderColor: theme.unique, paddingHorizontal: 12, marginVertical: 4 }] :
+                                [styles.itemAttrContainer, styles.innerBorder, { borderColor: theme.stats, paddingHorizontal: 12, marginVertical: 4 }]
+                        }>
+                            <Text style={{ color: theme.gold, fontFamily: fonts.cinzel.semiBold, width: '100%' }}>
+                                Drop Information
+                            </Text>
 
+                            <View style={styles.containerInfo}>
+                                <View style={{ maxWidth: '35%' }}>
+                                    <Text style={styles.infoLabel}>Acquisition:</Text>
+                                    <Text style={styles.infoLabel}>Drop Areas:</Text>
+                                </View>
+                                <View style={{ flex: 1, maxWidth: '65%' }}>
+                                    <Text style={{ color: theme.stats }}>{
+                                        acquisition ?
+                                            (
+                                                <HtmlContent
+                                                    value={acquisition}
+                                                    styleText={{
+                                                        color: theme.stats
+                                                    }}
+                                                />
+                                            ) :
+                                            (
+                                                <HtmlContent
+                                                    value={"Normal Drop"}
+                                                    styleText={{
+                                                        color: theme.stats
+                                                    }}
+                                                />
+                                            )
+                                    }</Text>
+                                    <Text style={{ color: theme.stats }}>{
+                                        dropAreas ?
+                                            (
+                                                <HtmlContent
+                                                    value={dropAreas}
+                                                    styleText={{
+                                                        color: theme.stats
+                                                    }}
+                                                />
+                                            ) :
+                                            (
+                                                <HtmlContent
+                                                    value={""}
+                                                    styleText={{
+                                                        color: theme.stats
+                                                    }}
+                                                />
+                                            )
+                                    }</Text>
+                                </View>
                             </View>
                         </View>
                     </View>
-                    <View>
 
-                        {implicitStats ? (
-                            <View style={styles.card}>
-                                <Text style={{color: theme.gold, fontFamily: fonts.cinzel.bold, fontSize: 14}}>Implicity Stats</Text>
-                                <Divider color={'gold'} spaceVertical={4} spaceHorizontal={0} widthDivider={'80%'} align={'center'} />
-                                <Text>
-                                    <HtmlContent
-                                        value={implicitStats}
-                                        styleText={{
-                                            color: theme.stats
-                                        }}
-                                    />
-                                </Text>
+                    <View style={
+                        frameType === 'unique' ?
+                            [styles.itemAttrContainer, styles.outerBorder, { borderColor: theme.unique, backgroundColor: '#00000080' }] :
+                            [styles.itemAttrContainer, styles.outerBorder, { borderColor: theme.stats, backgroundColor: '#00000080' }]
+                    }>
+                        <View style={
+                            frameType === 'unique' ?
+                                [styles.itemAttrContainer, styles.innerBorder, { borderColor: theme.unique }] :
+                                [styles.itemAttrContainer, styles.innerBorder, { borderColor: theme.stats }]
+                        }>
+                            <View>
+                                <WikiImage fileName={item.inventory_icon} size={150} />
                             </View>
-                        ) : null}
 
-                        {explicitStats ? (
-                            <>
-                                <View style={styles.containerExplicityStats}>
-                                    <Text style={{color: theme.gold, fontFamily: fonts.cinzel.bold, fontSize: 14}}>Explicity Stats</Text>
-                                    <Divider color={'gold'} spaceVertical={4} spaceHorizontal={0} widthDivider={'80%'} align={'center'} />
+                            <Text style={[styles.attributes, {marginTop: 8}]}>{
+                                `${'Requires Level ' + requiredLevel}` +
+                                `${requiredIntelligence !== '0' ? ', ' + requiredIntelligence + ' Int' : ''}` +
+                                `${requiredStrength !== '0' ? ', ' + requiredStrength + ' Str' : ''}` +
+                                `${requiredDexterity !== '0' ? ', ' + requiredDexterity + ' Dex' : ''}`
+                            }
+                            </Text>
+
+
+                            <Divider color={'gold'} spaceVertical={8} spaceHorizontal={0} widthDivider={'80%'} align={'center'} />
+
+                            <View style={styles.statsItemContainer}>
+                                <View style={styles.statsContainer}>
+                                    <Text style={attributesArmour.armour && attributesArmour.armour !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Armour: `}
+                                        <Text style={[styles.attrValue, { color: theme.statsLink }]}>{attributesArmour.armour}</Text>
+                                    </Text>
+                                    <Text style={attributesArmour.evasion && attributesArmour.evasion !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Evasion: `}
+                                        <Text style={[styles.attrValue]}>{attributesArmour.evasion}</Text>
+                                    </Text>
+                                    <Text style={attributesArmour.energyShield && attributesArmour.energyShield !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Energy Shield: `}
+                                        <Text style={[styles.attrValue]}>{attributesArmour.energyShield}</Text>
+                                    </Text>
+                                    <Text style={attributesArmour.moveSpeed && attributesArmour.moveSpeed !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Move Speed: `}
+                                        <Text style={[styles.attrValue]}>{attributesArmour.moveSpeed}</Text>
+                                    </Text>
+                                    <Text style={attributesArmour.ward && attributesArmour.ward !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Ward: `}
+                                        <Text style={[styles.attrValue]}>{attributesArmour.ward}</Text>
+                                    </Text>
+
+                                    <Text style={attributesWeapon.hasPhysical ? [styles.attributes] : [styles.attrNone]}>{`Physical DMG: `}
+                                        <Text style={[styles.attrValue]}>{attributesWeapon.physicalDmg}</Text>
+                                    </Text>
+                                    <Text
+                                        style={
+                                            attributesWeapon.hasFire ?
+                                                [styles.attributes, { color: theme.fire }] :
+                                                [styles.attrNone]
+                                        }
+                                    >Fire: <Text style={[styles.attrValue, { color: theme.fire }]}>{attributesWeapon.fireDmg}</Text>
+                                    </Text>
+                                    <Text
+                                        style={
+                                            attributesWeapon.hasCold ?
+                                                [styles.attributes, { color: theme.cold }] :
+                                                [styles.attrNone]
+                                        }
+                                    >Cold: <Text style={[styles.attrValue, { color: theme.cold }]}>{attributesWeapon.coldDmg}</Text>
+                                    </Text>
+                                    <Text
+                                        style={
+                                            attributesWeapon.hasLightning ?
+                                                [styles.attributes, { color: theme.lightning }] :
+                                                [styles.attrNone]
+                                        }
+                                    >Lightning: <Text style={[styles.attrValue, { color: theme.lightning }]}>{attributesWeapon.lightDmg}</Text>
+                                    </Text>
+                                    <Text
+                                        style={
+                                            attributesWeapon.hasChaos ?
+                                                [styles.attributes, { color: theme.chaos }] :
+                                                [styles.attrNone]
+                                        }
+                                    >Chaos: <Text style={[styles.attrValue, { color: theme.chaos }]}>{attributesWeapon.chaosDmg}</Text>
+                                    </Text>
+                                    <Text
+                                        style={
+                                            attributesWeapon.hasPoison ?
+                                                [styles.attributes, { color: theme.poison }] :
+                                                [styles.attrNone]
+                                        }
+                                    >Poison: <Text style={[styles.attrValue, { color: theme.poison }]}>{attributesWeapon.poisonDmg}</Text>
+                                    </Text>
+                                    <Text style={attributesWeapon.critChance && attributesWeapon.critChance !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Critical Chance: `}
+                                        <Text style={[styles.attrValue]}>{attributesWeapon.critChance}</Text>
+                                    </Text>
+                                    <Text style={attributesWeapon.atkSpeed && attributesWeapon.atkSpeed !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Attack Speed: `}
+                                        <Text style={[styles.attrValue]}>{attributesWeapon.atkSpeed}</Text>
+                                    </Text>
+                                    <Text style={attributesWeapon.reloadTime && attributesWeapon.reloadTime !== '0.00' ? [styles.attributes] : [styles.attrNone]}>{`Reload Speed: `}
+                                        <Text style={[styles.attrValue]}>{attributesWeapon.reloadTime}</Text>
+                                    </Text>
+
+                                </View>
+                            </View>
+
+                            {implicitStats ? (
+                                <>
+                                    <Text style={{ color: theme.gold, fontFamily: fonts.cinzel.bold, fontSize: 14 }}>Implicity Stats</Text>
+                                    <Divider color={'gold'} spaceVertical={8} spaceHorizontal={0} widthDivider={'80%'} align={'center'} />
+                                    <Text>
+                                        <HtmlContent
+                                            value={implicitStats}
+                                            styleText={{
+                                                color: theme.stats
+                                            }}
+                                        />
+                                    </Text>
+                                </>
+                            ) : null}
+
+                            {explicitStats ? (
+                                <>
+                                    <Divider color={'gold'} spaceVertical={8} spaceHorizontal={0} widthDivider={'80%'} align={'center'} />
                                     <Text>
                                         <HtmlContent
                                             value={explicitStats}
                                             styleText={{
-                                                color: theme.stats,
-                                                isBold: true,
-                                                textAlign: 'center'
+                                                color: theme.statsItem,
+                                                textAlign: 'center',
+                                                hasFont: true
                                             }}
                                         />
                                     </Text>
-                                </View>
-                            </>
-                        ) : null}
+                                </>
+                            ) : null}
 
+                        </View>
                     </View>
 
-                </View>
+                    <Divider color={'gold'} spaceVertical={12} spaceHorizontal={0} widthDivider={'100%'} align={'center'} />
 
-                <View style={[styles.itemCard]}>
-
-                    {acquisition ? (
-                        <>
-                            <Text style={styles.acquisitionLabel}>Drops</Text>
-                            <View style={styles.containerAcquisitionText}>
-                                <Text>
-                                    <HtmlContent
-                                        value={acquisition}
-                                        styleText={{
-                                            color: theme.stats,
-                                            isBold: true,
-                                            textAlign: 'center'
-                                        }}
-                                    />
-                                </Text>
-                            </View>
-                        </>
-                    ) : (
-                        <Text>
-
-                        </Text>
-                    )}
-
-                    <Text style={styles.acquisitionLabel}>Metadata</Text>
-
-                    <View style={styles.containerAcquisitionText}>
-                        {itemClass ? (
-                            <Text style={styles.metadata}>
-                                Item Class: {itemClass}
-                            </Text>
-                        ) : null}
-
-                        {rarity ? (
-                            <Text style={styles.metadata}>
-                                Rarity: {rarity}
-                            </Text>
-                        ) : null}
-
-                        {requiredLevel ? (
-                            <Text style={styles.metadata}>
-                                Requires Level: {requiredLevel}
-                            </Text>
-                        ) : null}
-                    </View>
-
-                </View>
-
-                {description ? (
-                    <View style={styles.card}>
-                        <Text style={styles.sectionTitle}>
-                            Descrição
-                        </Text>
-                        <Text style={styles.fieldValue}>
-                            {description}
-                        </Text>
-                    </View>
-                ) : null}
-
-                <View style={styles.card}>
-                    <Text style={styles.sectionTitle}>
-                        Todos os dados
+                    <Text style={
+                        frameType === 'unique' ? 
+                        [{color: theme.unique, fontSize: 8, textAlign: 'center', fontFamily: fonts.cinzel.regular}] :
+                        [{color: theme.stats, fontSize: 8, textAlign: 'center', fontFamily: fonts.cinzel.regular}]
+                    }>
+                        {flavourText}
                     </Text>
 
-                    {remainingFields.map(([key, value]) => (
-                        <View key={key} style={styles.field}>
-                            <Text style={styles.fieldLabel}>
-                                {formatLabel(key)}
-                            </Text>
+                    <Divider color={'gold'} spaceVertical={12} spaceHorizontal={0} widthDivider={'100%'} align={'center'} />
 
-                            <Text style={styles.fieldValue}>
-                                <HtmlContent value={value} />
-                            </Text>
-                        </View>
-                    ))}
                 </View>
             </ScrollView>
         </SafeAreaView>

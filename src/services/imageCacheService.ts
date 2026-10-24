@@ -34,7 +34,15 @@ function getDirectory(): Directory {
 }
 
 function normalizeName(name: string): string {
-  return name.trim().replace(/^File:/i, '').replace(/^\/+/, '');
+  return name.trim()
+    .replace(/^File:/i, '')
+    .replace(/^\/+/, '')
+    .replace(/&amp;#0*39;/gi, "'")
+    .replace(/&#0*39;|&apos;/gi, "'")
+    .replace(/&amp;quot;|&quot;/gi, '"')
+    .replace(/&amp;lt;|&lt;/gi, '<')
+    .replace(/&amp;gt;|&gt;/gi, '>')
+    .replace(/&amp;/gi, '&');
 }
 
 function makeKey(name: string): string {
@@ -136,6 +144,7 @@ async function processQueue(): Promise<void> {
 export async function getCachedImageUri(fileName: string): Promise<string> {
   if (!fileName || typeof fileName !== 'string') return '';
   const normalizedName = normalizeName(fileName);
+  console.log(normalizedName)
   if (!normalizedName) return '';
   const key = makeKey(normalizedName);
 

@@ -52,6 +52,12 @@ export const Colors = {
     stats: '#858585',
     statsLink: '#04bdbde3',
     disabled: '#464646',
+    fire: '#b30505',
+    cold: '#38d0ff',
+    lightning: '#fffc43',
+    chaos: '#d634ff',
+    poison: '#12fa31',
+    statsItem: '#6575d1'
   },
 } as const;
 
