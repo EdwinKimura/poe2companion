@@ -64,6 +64,7 @@ export async function getItemById(database: SQLiteDatabase,id: number): Promise<
             i.base_item,
             i.base_item_page,
             i.class,
+            i.class_id,
             i.description,
             i.drop_areas,
             i.flavour_text,

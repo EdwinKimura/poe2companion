@@ -16,7 +16,8 @@ export const styles = StyleSheet.create({
         top: 0,
         left: 0,
         width: "100%",
-        height: "100%"
+        height: "100%",
+        flex: 1
     },
     containerBackButton: {
         height: 56,
@@ -32,7 +33,8 @@ export const styles = StyleSheet.create({
     backButtonText: {
         color: COLORS.gold,
         fontSize: 48,
-        lineHeight: 48
+        lineHeight: 48,
+        marginBottom: 8
     },
     headerTitle: {
         fontSize: 16,
@@ -102,9 +104,7 @@ export const styles = StyleSheet.create({
 
     containerInfo: {
         width: '100%', 
-        flexDirection: 'row', 
-        justifyContent: 'space-between', 
-        paddingVertical: 8
+        marginTop: 8
     },
 
     infoLabel: {

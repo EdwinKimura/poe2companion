@@ -33,7 +33,7 @@ export default function ItemList({
       
       initialNumToRender={10}
       maxToRenderPerBatch={5}
-      onEndReached={onLoadMore}
+      // onEndReached={onLoadMore}
       onEndReachedThreshold={0.5}
       windowSize={5}
       removeClippedSubviews={true}

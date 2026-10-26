@@ -1,4 +1,5 @@
 
+import { Fonts } from '@/constants/theme';
 import { StyleSheet } from 'react-native';
 
 export const COLORS = {
@@ -15,16 +16,21 @@ export const COLORS = {
 export const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: '#000',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%"
   },
   header: {
     height: 56,
     paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    justifyContent: 'flex-start',
   },
   headerButton: {
     width: 36,
@@ -32,12 +38,15 @@ export const styles = StyleSheet.create({
   },
   headerButtonText: {
     color: COLORS.gold,
-    fontSize: 28,
+    fontSize: 48,
+    lineHeight: 48,
+    marginBottom: 8
   },
   headerTitle: {
-    color: COLORS.text,
-    fontSize: 21,
+    color: COLORS.gold,
+    fontSize: 18,
     fontWeight: '600',
+    fontFamily: Fonts.cinzel.regular
   },
   categoryBar: {
     flexGrow: 0,
@@ -66,7 +75,7 @@ export const styles = StyleSheet.create({
   categoryIcon: {
     width: '108%',
     height: "105%",
-    padding: 0, 
+    padding: 0,
     position: 'relative',
   },
   categoryImageFrame: {
@@ -114,9 +123,9 @@ export const styles = StyleSheet.create({
     padding: 14,
     paddingBottom: 30,
   },
-  breadcrumbContainer: { 
+  breadcrumbContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 16, 
+    paddingHorizontal: 16,
     paddingTop: 10
   },
   sectionTitle: {

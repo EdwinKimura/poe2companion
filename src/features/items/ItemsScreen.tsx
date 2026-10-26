@@ -1,12 +1,14 @@
 
+import Divider from '@/components/html-divider';
 import { useRouter } from 'expo-router';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import {
+  Image,
   Pressable,
   ScrollView,
   StatusBar,
   Text,
-  View,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -41,7 +43,7 @@ export default function ItemsScreen() {
     useState<ItemSubcategory | null>(null);
 
   const [search, setSearch] = useState('');
-  const [rarity, setRarity] = useState<RarityFilter>({id: 'All', label: 'Todos'});
+  const [rarity, setRarity] = useState<RarityFilter>({ id: 'All', label: 'Todos' });
   const [showFilters, setShowFilters] = useState(false);
 
   const [minLevel, setMinLevel] = useState('');
@@ -124,7 +126,7 @@ export default function ItemsScreen() {
     setCategory(item);
     setSubcategory(null);
     setSearch('');
-    setRarity({id: 'All', label: 'Todos'});
+    setRarity({ id: 'All', label: 'Todos' });
     setShowFilters(false);
     setOffset(0);
     setItems([]);
@@ -135,7 +137,7 @@ export default function ItemsScreen() {
     setSelectedCategory(item.id)
     setSubcategory(item);
     setSearch('');
-    setRarity({id: 'All', label: 'Todos'});
+    setRarity({ id: 'All', label: 'Todos' });
     setShowFilters(false);
     setMinLevel('');
     setMaxLevel('');
@@ -165,7 +167,7 @@ export default function ItemsScreen() {
     setAppliedMinLevel('');
     setAppliedMaxLevel('');
     setSearch('');
-    setRarity({id: 'All', label: 'Todos'});
+    setRarity({ id: 'All', label: 'Todos' });
   }
 
   const filteredItems = useMemo(() => {
@@ -202,6 +204,12 @@ export default function ItemsScreen() {
       style={styles.screen}
       edges={['top', 'bottom', 'left', 'right']}
     >
+      <Image
+        style={styles.backgroundImage}
+        source={require('@/assets/images/backgrounds/item/background_item.png')}
+        resizeMode="cover"
+      />
+
       <StatusBar
         barStyle="light-content"
         backgroundColor={COLORS.background}
@@ -222,6 +230,7 @@ export default function ItemsScreen() {
 
         <View style={styles.headerButton} />
       </View>
+      <Divider color={'gold'} spaceVertical={0} spaceHorizontal={0} widthDivider={'100%'} align={'flex-start'} />
 
       {!subcategory && (
         <ItemCategoryBar
@@ -230,6 +239,8 @@ export default function ItemsScreen() {
           onSelect={selectCategory}
         />
       )}
+
+      <Divider color={'gold'} spaceVertical={0} spaceHorizontal={0} widthDivider={'100%'} align={'flex-start'} />
 
       {!category && (
         <ScrollView style={styles.containerList}>

@@ -34,7 +34,7 @@ export default function ItemCard({
 
       <View style={styles.itemInfo}>
         <Text style={styles.itemName}>
-          <HtmlContent value={item.name} styleText={{color: theme.gold}}/>
+          <HtmlContent value={item.name} styleText={{color: theme.gold, hasFont: true}}/>
         </Text>
 
         <Text style={styles.itemBase}>

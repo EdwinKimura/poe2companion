@@ -144,7 +144,6 @@ async function processQueue(): Promise<void> {
 export async function getCachedImageUri(fileName: string): Promise<string> {
   if (!fileName || typeof fileName !== 'string') return '';
   const normalizedName = normalizeName(fileName);
-  console.log(normalizedName)
   if (!normalizedName) return '';
   const key = makeKey(normalizedName);
 

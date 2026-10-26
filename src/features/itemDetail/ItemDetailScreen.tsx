@@ -3,6 +3,7 @@ import Divider from '@/components/html-divider';
 import WikiImage from '@/components/wiki-image';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { clearImageCacheQueue } from '@/services/imageCacheService';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
@@ -17,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getDatabase } from '../../database/database';
 import { getItemById } from '../../database/repositories/ItemsRepository';
 import { styles } from './ItemDetail.styles';
+import ItemGeneralLine from './components/ItemGeneralLine';
 
 type ItemData = Record<string, unknown>;
 
@@ -86,6 +88,7 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
             setIsLoading(true);
             setError(null);
             setItem(null);
+            clearImageCacheQueue();
 
             try {
                 const parsedId = Number(
@@ -166,18 +169,19 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
     const name = formatLabel(formatValue(item.name)) || formatLabel(formatValue(item._pageTitle)) || 'Item sem nome';
     const baseItem = formatValue(item.base_item) || formatValue(item.base_item_page);
     const itemClass = formatValue(item.class);
+    const itemClassID = formatValue(item.class_id);
     const rarity = formatValue(item.rarity);
     const frameType = formatValue(item.frame_type);
     const flavourText = removeHtmlEntities(formatLabel(formatValue(item.flavour_text)));
-    const description = formatValue(item.description);
+    const description = formatLabel(formatValue(item.description));
     const explicitStats = formatValue(item.explicit_stat_text);
     const implicitStats = formatValue(item.implicit_stat_text);
     const requiredLevel = formatValue(item.required_level);
     const requiredIntelligence = formatValue(item.required_intelligence);
     const requiredStrength = formatValue(item.required_strength);
     const requiredDexterity = formatValue(item.required_dexterity);
-    const acquisition = formatValue(item.drop_text);
-    const dropAreas = formatValue(item.drop_areas);
+    const acquisition = formatLabel(formatValue(item.drop_text));
+    const dropAreas = formatLabel(formatValue(item.drop_areas));
     const attributesArmour = {
         'armour': formatValue(item.armour_range_text),
         'evasion': formatValue(item.evasion_range_text),
@@ -232,7 +236,7 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
             <Image
                 style={styles.backgroundImage}
                 source={require('@/assets/images/backgrounds/item/background_item.png')}
-                resizeMode="cover"
+                resizeMode="contain"
             />
             <View style={styles.containerBackButton}>
                 <Pressable
@@ -244,12 +248,19 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                 </Pressable>
 
                 <View>
-                    <Text style={frameType === 'unique' ? { color: theme.unique, fontFamily: fonts.cinzel.medium, fontSize: 16 } : { color: theme.stats, fontFamily: fonts.cinzel.medium, fontSize: 16}}>
+                    <Text style={frameType === 'unique' ? { color: theme.unique, fontFamily: fonts.cinzel.medium, fontSize: 16 } : { color: theme.stats, fontFamily: fonts.cinzel.medium, fontSize: 16 }}>
                         {name}
                     </Text>
-                    <Text style={frameType === 'unique' ? { color: theme.unique, fontFamily: fonts.cinzel.medium, fontSize: 8 }  : { color: theme.stats, fontFamily: fonts.cinzel.medium, fontSize: 8 }}>
-                        {baseItem}
-                    </Text>
+                    {
+                        baseItem ?
+                            (
+                                <Text style={frameType === 'unique' ? { color: theme.unique, fontFamily: fonts.cinzel.medium, fontSize: 8 } : { color: theme.stats, fontFamily: fonts.cinzel.medium, fontSize: 8 }}>
+                                    {baseItem}
+                                </Text>
+                            ) :
+                            null
+                    }
+
                 </View>
 
                 <View style={styles.backButton} />
@@ -261,8 +272,8 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
 
                     <View style={
                         frameType === 'unique' ?
-                            [styles.itemAttrContainer, styles.outerBorder, { borderColor: theme.unique, marginBottom: 12, backgroundColor: '#00000080' }] :
-                            [styles.itemAttrContainer, styles.outerBorder, { borderColor: theme.stats, marginBottom: 12, backgroundColor: '#00000080' }]
+                            [styles.itemAttrContainer, styles.outerBorder, { borderColor: theme.unique, backgroundColor: '#00000080' }] :
+                            [styles.itemAttrContainer, styles.outerBorder, { borderColor: theme.stats, backgroundColor: '#00000080' }]
                     }>
                         <View style={
                             frameType === 'unique' ?
@@ -274,103 +285,35 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                             </Text>
 
                             <View style={styles.containerInfo}>
-                                <View style={{ maxWidth: '35%' }}>
-                                    <Text style={styles.infoLabel}>Name:</Text>
-                                    <Text style={styles.infoLabel}>Base Item:</Text>
-                                    <Text style={styles.infoLabel}>Class:</Text>
-                                    <Text style={styles.infoLabel}>Rarity:</Text>
-                                    <Text style={styles.infoLabel}>Description:</Text>
-                                </View>
-                                <View style={{ flex: 1, maxWidth: '65%' }}>
-                                    <Text style={frameType === 'unique' ? { color: theme.unique } : { color: theme.stats }}>
-                                        <HtmlContent
-                                            value={name}
-                                            styleText={frameType === 'unique' ? { color: theme.unique } : { color: theme.stats }}
-                                        />
-                                    </Text>
-                                    <Text style={frameType === 'unique' ? { color: theme.unique, fontFamily: fonts.inter.Light } : { color: theme.stats, fontFamily: fonts.inter.Light }}>{baseItem}</Text>
-                                    <Text style={frameType === 'unique' ? { color: theme.unique, fontFamily: fonts.inter.Light } : { color: theme.stats, fontFamily: fonts.inter.Light }}>{itemClass}</Text>
-                                    <Text style={frameType === 'unique' ? [{ color: theme.unique, fontFamily: fonts.inter.Light }] : { color: theme.stats, fontFamily: fonts.inter.Light }}>{rarity}</Text>
-                                    <Text style={{ color: theme.stats }}>{
-                                        description ?
-                                            (
-                                                <HtmlContent
-                                                    value={description}
-                                                    styleText={{
-                                                        color: theme.stats
-                                                    }}
-                                                />
-                                            ) :
-                                            (
-                                                <HtmlContent
-                                                    value={""}
-                                                    styleText={{
-                                                        color: theme.stats
-                                                    }}
-                                                />
-                                            )
-                                    }</Text>
+                                <View>
+                                    <ItemGeneralLine item={{key: 'Name', value: name}} styleStats={frameType === 'unique' ? { color: theme.unique } : { color: theme.stats }}/>
+                                    <ItemGeneralLine item={{key: 'Base Item', value: baseItem}} styleStats={frameType === 'unique' ? { color: theme.unique } : { color: theme.stats }}/>
+                                    <ItemGeneralLine item={{key: 'Class', value: itemClass}} styleStats={frameType === 'unique' ? { color: theme.unique } : { color: theme.stats }}/>
+                                    <ItemGeneralLine item={{key: 'Rarity', value: rarity}} styleStats={frameType === 'unique' ? { color: theme.unique } : { color: theme.stats }}/>
+                                    <ItemGeneralLine item={{key: 'Description', value: description}} isHtmlContent={true} styleStats={frameType === 'unique' ? { color: theme.unique } : { color: theme.stats }}/>
                                 </View>
                             </View>
                         </View>
 
                         <View style={
                             frameType === 'unique' ?
-                                [styles.itemAttrContainer, styles.innerBorder, { borderColor: theme.unique, paddingHorizontal: 12, marginVertical: 4 }] :
-                                [styles.itemAttrContainer, styles.innerBorder, { borderColor: theme.stats, paddingHorizontal: 12, marginVertical: 4 }]
+                                [styles.itemAttrContainer, styles.innerBorder, { borderColor: theme.unique, paddingHorizontal: 12, marginTop: 4 }] :
+                                [styles.itemAttrContainer, styles.innerBorder, { borderColor: theme.stats, paddingHorizontal: 12, marginTop: 4 }]
                         }>
                             <Text style={{ color: theme.gold, fontFamily: fonts.cinzel.semiBold, width: '100%' }}>
                                 Drop Information
                             </Text>
 
                             <View style={styles.containerInfo}>
-                                <View style={{ maxWidth: '35%' }}>
-                                    <Text style={styles.infoLabel}>Acquisition:</Text>
-                                    <Text style={styles.infoLabel}>Drop Areas:</Text>
-                                </View>
-                                <View style={{ flex: 1, maxWidth: '65%' }}>
-                                    <Text style={{ color: theme.stats }}>{
-                                        acquisition ?
-                                            (
-                                                <HtmlContent
-                                                    value={acquisition}
-                                                    styleText={{
-                                                        color: theme.stats
-                                                    }}
-                                                />
-                                            ) :
-                                            (
-                                                <HtmlContent
-                                                    value={"Normal Drop"}
-                                                    styleText={{
-                                                        color: theme.stats
-                                                    }}
-                                                />
-                                            )
-                                    }</Text>
-                                    <Text style={{ color: theme.stats }}>{
-                                        dropAreas ?
-                                            (
-                                                <HtmlContent
-                                                    value={dropAreas}
-                                                    styleText={{
-                                                        color: theme.stats
-                                                    }}
-                                                />
-                                            ) :
-                                            (
-                                                <HtmlContent
-                                                    value={""}
-                                                    styleText={{
-                                                        color: theme.stats
-                                                    }}
-                                                />
-                                            )
-                                    }</Text>
+                                <View>
+                                    <ItemGeneralLine item={{key: 'Acquisition', value: acquisition ? acquisition : itemClassID === 'Microtransaction' ? "Buy in " + itemClassID : "Normal Drop"}} isHtmlContent={true} />
+                                    <ItemGeneralLine item={{key: 'Drop Areas', value: dropAreas}} isHtmlContent={true} />
                                 </View>
                             </View>
                         </View>
                     </View>
+
+                    <Divider color={'gold'} spaceVertical={16} spaceHorizontal={0} widthDivider={'100%'} align={'center'} />
 
                     <View style={
                         frameType === 'unique' ?
@@ -386,11 +329,11 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                                 <WikiImage fileName={item.inventory_icon} size={150} />
                             </View>
 
-                            <Text style={[styles.attributes, {marginTop: 8}]}>{
+                            <Text style={[styles.attributes, { marginTop: 8 }]}>{
                                 `${'Requires Level ' + requiredLevel}` +
-                                `${requiredIntelligence !== '0' ? ', ' + requiredIntelligence + ' Int' : ''}` +
-                                `${requiredStrength !== '0' ? ', ' + requiredStrength + ' Str' : ''}` +
-                                `${requiredDexterity !== '0' ? ', ' + requiredDexterity + ' Dex' : ''}`
+                                `${requiredIntelligence && requiredIntelligence !== '0' ? ', ' + requiredIntelligence + ' Int' : ''}` +
+                                `${requiredStrength && requiredStrength !== '0' ? ', ' + requiredStrength + ' Str' : ''}` +
+                                `${requiredDexterity && requiredDexterity !== '0' ? ', ' + requiredDexterity + ' Dex' : ''}`
                             }
                             </Text>
 
@@ -400,7 +343,7 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                             <View style={styles.statsItemContainer}>
                                 <View style={styles.statsContainer}>
                                     <Text style={attributesArmour.armour && attributesArmour.armour !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Armour: `}
-                                        <Text style={[styles.attrValue, { color: theme.statsLink }]}>{attributesArmour.armour}</Text>
+                                        <Text style={[styles.attrValue]}>{attributesArmour.armour}</Text>
                                     </Text>
                                     <Text style={attributesArmour.evasion && attributesArmour.evasion !== '0' ? [styles.attributes] : [styles.attrNone]}>{`Evasion: `}
                                         <Text style={[styles.attrValue]}>{attributesArmour.evasion}</Text>
@@ -473,7 +416,6 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
 
                             {implicitStats ? (
                                 <>
-                                    <Text style={{ color: theme.gold, fontFamily: fonts.cinzel.bold, fontSize: 14 }}>Implicity Stats</Text>
                                     <Divider color={'gold'} spaceVertical={8} spaceHorizontal={0} widthDivider={'80%'} align={'center'} />
                                     <Text>
                                         <HtmlContent
@@ -505,18 +447,25 @@ export default function ItemDetailScreen({ id, }: ItemDetailScreenProps) {
                         </View>
                     </View>
 
-                    <Divider color={'gold'} spaceVertical={12} spaceHorizontal={0} widthDivider={'100%'} align={'center'} />
+                    {
+                        flavourText ?
+                            (
+                                <View>
+                                    <Divider color={'gold'} spaceVertical={12} spaceHorizontal={0} widthDivider={'100%'} align={'center'} />
 
-                    <Text style={
-                        frameType === 'unique' ? 
-                        [{color: theme.unique, fontSize: 8, textAlign: 'center', fontFamily: fonts.cinzel.regular}] :
-                        [{color: theme.stats, fontSize: 8, textAlign: 'center', fontFamily: fonts.cinzel.regular}]
-                    }>
-                        {flavourText}
-                    </Text>
+                                    <Text style={
+                                        frameType === 'unique' ?
+                                            [{ color: theme.unique, fontSize: 8, textAlign: 'center', fontFamily: fonts.cinzel.regular }] :
+                                            [{ color: theme.stats, fontSize: 8, textAlign: 'center', fontFamily: fonts.cinzel.regular }]
+                                    }>
+                                        {flavourText}
+                                    </Text>
 
-                    <Divider color={'gold'} spaceVertical={12} spaceHorizontal={0} widthDivider={'100%'} align={'center'} />
-
+                                    <Divider color={'gold'} spaceVertical={12} spaceHorizontal={0} widthDivider={'100%'} align={'center'} />
+                                </View>
+                            ) :
+                            null
+                    }
                 </View>
             </ScrollView>
         </SafeAreaView>

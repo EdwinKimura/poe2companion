@@ -33,44 +33,6 @@ import { useRouter } from 'expo-router';
 
 import { getVersions } from '@/database/repositories/VersionRepository';
 
-const FEATURES = [
-    {
-        id: 'items',
-        symbol: <DoubleSwordIcon width="24px" height="24px" color={SVGColors.gold} />,
-        title: 'Itens',
-        description: 'Equipamentos, bases e atributos',
-        enabled: true
-    },
-    {
-        id: 'crafting',
-        symbol: <Anvil width="24px" height="24px" color={SVGColors.gold} />,
-        title: 'Crafting',
-        description: 'Modificadores e bases',
-        enabled: false
-    },
-    {
-        id: 'classes',
-        symbol: <Dwarf width="24px" height="24px" color={SVGColors.gold} />,
-        title: 'Classes',
-        description: 'Personagens e ascensões',
-        enabled: false
-    },
-    {
-        id: 'skills',
-        symbol: <Diamond width="24px" height="24px" color={SVGColors.gold} />,
-        title: 'Habilidades',
-        description: 'Gemas, efeitos e suportes',
-        enabled: false
-    },
-    {
-        id: 'mechanics',
-        symbol: <Cogs width="24px" height="24px" color={SVGColors.gold} />,
-        title: 'Mecânicas',
-        description: 'Mecânicas dos eventos',
-        enabled: false
-    },
-];
-
 async function handleTriggerReset() {
     await forceResetAppVersion();
     console.log('Pronto! Reinicie o app para disparar o wipe do banco.');
@@ -87,6 +49,49 @@ export default function HomeScreen() {
     const [isSyncing, setIsSyncing] = useState(isSyncInProgress());
     const [releaseVersion, setReleaseVersion] = useState<string | null>(null);
     const [poeVersion, setPoeVersion] = useState<string | null>(null);
+
+    const FEATURES = [
+        {
+            id: 'items',
+            symbol: <DoubleSwordIcon width="24px" height="24px" color={SVGColors.gold} />,
+            title: 'Itens',
+            description: 'Equipamentos, bases e atributos',
+            route: () => router.push('/items'),
+            enabled: true
+        },
+        {
+            id: 'craft',
+            symbol: <Anvil width="24px" height="24px" color={SVGColors.gold} />,
+            title: 'Crafting',
+            description: 'Modificadores e bases',
+            route: () => router.push('/craft'),
+            enabled: true
+        },
+        {
+            id: 'classes',
+            symbol: <Dwarf width="24px" height="24px" color={SVGColors.gold} />,
+            title: 'Classes',
+            description: 'Personagens e ascensões',
+            route: () => router.push('/ascendancy'),
+            enabled: true
+        },
+        {
+            id: 'skills',
+            symbol: <Diamond width="24px" height="24px" color={SVGColors.gold} />,
+            title: 'Habilidades',
+            description: 'Gemas, efeitos e suportes',
+            route: () => router.push('/craft'),
+            enabled: false
+        },
+        {
+            id: 'mechanics',
+            symbol: <Cogs width="24px" height="24px" color={SVGColors.gold} />,
+            title: 'Mecânicas',
+            description: 'Mecânicas dos eventos',
+            route: () => router.push('/craft'),
+            enabled: false
+        },
+    ];
 
     useEffect(() => {
         return subscribeSyncStatus(setIsSyncing);
@@ -119,7 +124,7 @@ export default function HomeScreen() {
             }
         }
 
-        void loadVersionPoe();
+        void loadVersionPoe(); 
     }, []);
 
     async function handleOpenRelease() {
@@ -259,12 +264,7 @@ export default function HomeScreen() {
                                     <Pressable
                                         key={feature.id}
                                         disabled={!feature.enabled}
-                                        onPress={() => {
-                                            if (feature.id === 'items') {
-                                                router.push('/items');
-                                                return;
-                                            }
-                                        }}
+                                        onPress={feature.route}
                                         style={({ pressed }) => [
                                             styles.featureCard,
                                             !feature.enabled && { opacity: 0.3 },
@@ -310,7 +310,6 @@ export default function HomeScreen() {
                             </Text>
                         </View>
                     </View>
-
                 </View>
 
                 <Text style={[styles.footer, { color: theme.disabled }]}>

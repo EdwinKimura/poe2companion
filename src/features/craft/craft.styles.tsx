@@ -1,0 +1,310 @@
+
+import { Fonts } from '@/constants/theme';
+import { StyleSheet } from 'react-native';
+
+export const COLORS = {
+  background: '#10100F',
+  surface: '#1B1A18',
+  surfaceLight: '#26231F',
+  border: '#383128',
+  text: '#F0E9DC',
+  muted: '#A49A89',
+  gold: '#C7A66A',
+  unique: 'rgb(175 96 37)',
+};
+
+export const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%"
+  },
+  header: {
+    height: 56,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  headerButton: {
+    width: 36,
+    justifyContent: 'center',
+  },
+  headerButtonText: {
+    color: COLORS.gold,
+    fontSize: 48,
+    lineHeight: 48,
+    marginBottom: 8
+  },
+  headerTitle: {
+    color: COLORS.gold,
+    fontSize: 18,
+    fontWeight: '600',
+    fontFamily: Fonts.cinzel.regular
+  },
+  categoryBar: {
+    flexGrow: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  categoryContent: {
+    padding: 10,
+    gap: 8,
+  },
+  categoryButton: {
+    width: 100,
+    height: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  categorySelected: {
+    backgroundColor: COLORS.surfaceLight,
+    borderColor: COLORS.gold,
+  },
+  categoryIcon: {
+    width: '108%',
+    height: "105%",
+    padding: 0,
+    position: 'relative',
+  },
+  categoryImageFrame: {
+    width: '100%',
+    height: "101%",
+    position: 'absolute',
+    opacity: 0.4,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
+  },
+  categoryImage: {
+    width: '60%',
+    height: "60%",
+    position: 'relative',
+    top: -5,
+    marginHorizontal: 'auto',
+    marginVertical: 'auto',
+  },
+  labelContainer: {
+    position: 'absolute',
+    justifyContent: 'flex-end',
+    width: '100%',
+    height: '100%',
+    paddingVertical: 4,
+    experimental_backgroundImage: 'radial-gradient(circle, transparent, #000000a1)',
+    experimental_backgroundPosition: 'center',
+    experimental_backgroundRepeat: 'no-repeat',
+    experimental_backgroundSize: '100% 100%',
+  },
+  categoryLabel: {
+    color: COLORS.gold,
+    fontSize: 10,
+    textAlign: 'center',
+    fontFamily: 'Cinzel_700Bold'
+  },
+  containerList: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+  },
+  contentPadding: {
+    padding: 14,
+    paddingBottom: 30,
+  },
+  breadcrumbContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingTop: 10
+  },
+  sectionTitle: {
+    color: COLORS.gold,
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  subcategory: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 58,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 8,
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 8,
+  },
+  subcategoryTitle: {
+    flex: 1,
+    color: COLORS.text,
+    fontSize: 14,
+  },
+  chevron: {
+    color: COLORS.gold,
+    fontSize: 24,
+  },
+  toolbar: {
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 8,
+    gap: 10,
+  },
+  searchRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  searchInput: {
+    flex: 1,
+    minHeight: 44,
+    paddingHorizontal: 12,
+    color: COLORS.text,
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 8,
+  },
+  filterButton: {
+    minWidth: 46,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 8,
+    backgroundColor: COLORS.surface,
+  },
+  filterButtonText: {
+    color: COLORS.gold,
+    fontSize: 18,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  chip: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 7,
+  },
+  chipSelected: {
+    borderColor: COLORS.gold,
+    backgroundColor: COLORS.surfaceLight,
+  },
+  chipText: {
+    color: COLORS.muted,
+    fontSize: 12,
+  },
+  chipTextSelected: {
+    color: COLORS.gold,
+  },
+  itemCard: {
+    minHeight: 92,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    marginHorizontal: 12,
+    marginTop: 8,
+    gap: 12,
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 9,
+  },
+  itemImagePlaceholder: {
+    width: 85,
+    height: 85,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.surfaceLight,
+    borderRadius: 7,
+  },
+  itemImageText: {
+    color: COLORS.gold,
+    fontSize: 25,
+  },
+  itemInfo: {
+    flex: 1,
+    gap: 5,
+  },
+  itemName: {
+    color: COLORS.gold,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  itemBase: {
+    color: COLORS.text,
+    fontSize: 12,
+  },
+  itemMeta: {
+    color: COLORS.muted,
+    fontSize: 11,
+  },
+  emptyText: {
+    color: COLORS.muted,
+    textAlign: 'center',
+    padding: 24,
+  },
+  filterPanel: {
+    padding: 14,
+    gap: 12,
+    backgroundColor: COLORS.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  filterLabel: {
+    color: COLORS.text,
+    fontSize: 13,
+    marginBottom: 6,
+  },
+  filterInput: {
+    minHeight: 40,
+    paddingHorizontal: 10,
+    color: COLORS.text,
+    backgroundColor: COLORS.background,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 7,
+  },
+  filterActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  clearButton: {
+    flex: 1,
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 7,
+  },
+  applyButton: {
+    flex: 2,
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.gold,
+    borderRadius: 7,
+  },
+  clearButtonText: {
+    color: COLORS.text,
+  },
+  applyButtonText: {
+    color: COLORS.background,
+    fontWeight: '700',
+  },
+});
